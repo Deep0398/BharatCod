@@ -10,7 +10,7 @@ export  default async function connectDB(){
         const connect = await mongoose.connect(process.env.mongoURL);
         console.log('db connected'+connect.connection.host);
     } catch (err) {
-        res.status(500).send(err.message);
+    res.status(500).send(err.message);
     }
     
 }

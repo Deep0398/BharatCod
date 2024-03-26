@@ -8,7 +8,7 @@ import nodemailer from 'nodemailer';
 
 export async function signUpController(req,res){
     try {
-        const { name,email, password,phone,role } = req.body;
+        const { name,email, password } = req.body;
     
         //  Validate email format
 
