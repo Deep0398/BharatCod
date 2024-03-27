@@ -6,6 +6,7 @@ import Order from "../models/order.model.js"
 
 export async function addToCart(req, res){
     console.log(req.user)
+    
 // Find product by ID from Products Schema by object ID 
 
     try{
@@ -23,7 +24,7 @@ export async function addToCart(req, res){
     const newItem= new CartItem({
         productId,
         quantity,
-        userId: req.user?req.user._id:null,
+        userID: req.user._id,
         totalPrice
     })
 console.log(newItem)

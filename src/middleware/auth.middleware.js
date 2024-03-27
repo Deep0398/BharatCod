@@ -16,7 +16,7 @@ if(!token){
 try {
     const decoded = jwt.verify(token, 'greenwebsolutions')
     console.log("Decoded Token:",decoded)
-    console.log("User ID:",decoded.userId)
+    console.log("userID:",decoded.userID)
     req.user = decoded
     next()
 }catch(err){

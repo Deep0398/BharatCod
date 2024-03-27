@@ -19,7 +19,7 @@ export async function signUpController(req,res){
         //  Check if the email is already registered
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
-          return res.status(400).send('Email is already registered');
+          return res.status(409).send('Email is already registered');
         }
 
         // //Phone no. validation 
