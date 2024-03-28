@@ -5,6 +5,7 @@ import {searchProductByName,insertProduct, searchProductByCategory,updateProduct
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
+ import {placeOrder,trackOrder,cancelOrder} from "../controller/order.controller.js"
 const userRouter = express.Router();
 // Signup and log in
 
@@ -24,6 +25,11 @@ userRouter.post('/new-product',insertProduct);
  userRouter.get('/category',searchProductByCategory);
  userRouter.put('/update/:id',updateProduct);
 
+ //order routes
+
+ userRouter.post('/order/place',placeOrder)
+ userRouter.get('/order/:orderid/status',trackOrder)
+ userRouter.put('/order/:orderid/cancel',cancelOrder)
 
  //google sign in 
 

@@ -10,11 +10,11 @@ export async function signUpController(req,res){
     try {
         const { name,email, password } = req.body;
     
-        //  Validate email format
+        // //  Validate email format
 
-         if (!validator.isEmail(email)) {
-           return res.status(400).send('Invalid email format');
-         }
+        //  if (!validator.isEmail(email)) {
+        //    return res.status(400).send('Invalid email format');
+        //  }
         
         //  Check if the email is already registered
         const existingUser = await userModel.findOne({ email });
@@ -86,6 +86,7 @@ export async function searchUserController(req, res) {
       return res.status(404).send('User not found');
     }
 
+    
 // Hash Password durig login
 
 

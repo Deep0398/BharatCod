@@ -26,11 +26,13 @@ totalPrice:{
     type:Number,
     required: true
 },
-createdAt:{
-    type:Date,
-    default:Date.now
-}
-})
+status:{
+    type:String,
+    enum:['placed','shipped','delivered','canceled'],
+    default:'placed'
+},
+},
+{timestamps:true})
 
 const Order = mongoose.model('Order', orderSchema)
 export default Order
