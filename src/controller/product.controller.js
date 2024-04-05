@@ -5,9 +5,9 @@ import { Products } from "../models/product.model.js";
 
 export  async function insertProduct(req,res){
     try{
-        const {name,description,price,specification,category} = req.body
+        const {name,description,price,specification,category,image} = req.body
         const products = new Products({
-            name,description,price,specification,category
+            name,description,price,specification,category,image
         })
 
         const result = await products.save()
@@ -33,9 +33,9 @@ export async function getProducts(req,res){
 export async function updateProduct(req,res){
     try{
         const {id} = req.params
-        const {name,description,price,specification,category} = req.body
+        const {name,description,price,specification,category,image} = req.body
         const products = await Products.findByIdAndUpdate(id,{
-            name,description,price,specification,category
+            name,description,price,specification,category,image
         },{new:true})
         console.log(products)
         return res.status(200).json(products)

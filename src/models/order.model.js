@@ -31,6 +31,8 @@ status:{
     enum:['placed','shipped','delivered','canceled'],
     default:'placed'
 },
+
+
 },
 {timestamps:true})
 

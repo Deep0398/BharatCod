@@ -5,7 +5,7 @@ import {Products} from "../models/product.model.js";
 export async function placeOrder(req,res){
     try {
         // console.log("Request Body",req.body)
-        const {productId, quantity, userId} = req.body
+        const {productId, quantity, userId,} = req.body
 
         if(!productId || !quantity || !userId){
             return res.status(400).json({message:"ProductId, quantity, or userId is missing"})
