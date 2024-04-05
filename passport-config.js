@@ -59,7 +59,7 @@
 //         user = await userModel({
 //           name: profile.displayName,
 //           email: profile.emails? profile.emails[0].value:null,
-//           facebookID: profile.id
+//           facebookID: profile.id 
 //         })
 //         await user.save();
 //       }

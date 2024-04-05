@@ -19,6 +19,15 @@ export  async function insertProduct(req,res){
     }
 }
 
+export async function getProducts(req,res){
+    try{
+        const products = await Products.find()
+        return res.status(200).json(products)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: "internal server error"})
+    }
+}
 //update a product
 
 export async function updateProduct(req,res){

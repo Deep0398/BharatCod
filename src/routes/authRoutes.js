@@ -1,11 +1,13 @@
 import express from "express"
 // import passport from "passport";
 import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController} from "../controller/user.controller.js";
-import {searchProductByName,insertProduct, searchProductByCategory,updateProduct} from "../controller/product.controller.js";
+import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
  import {placeOrder,trackOrder,cancelOrder} from "../controller/order.controller.js"
+import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../controller/wishlist.controller.js";
+ 
 const userRouter = express.Router();
 // Signup and log in
 
@@ -24,12 +26,13 @@ userRouter.post('/new-product',insertProduct);
  userRouter.get('/Product',searchProductByName);
  userRouter.get('/category',searchProductByCategory);
  userRouter.put('/update/:id',updateProduct);
+ userRouter.get('/getAllProducts',getProducts)
 
  //order routes
 
  userRouter.post('/order/place',placeOrder)
- userRouter.get('/order/:orderid/status',trackOrder)
- userRouter.put('/order/:orderid/cancel',cancelOrder)
+ userRouter.get('/order/:orderId/status',trackOrder)
+ userRouter.put('/order/:orderId/cancel',cancelOrder)
 
  //google sign in 
 
@@ -39,6 +42,11 @@ userRouter.post('/new-product',insertProduct);
 //  successRedirect:'/'
 //  }))
 
+//wishlist routes 
+userRouter.post('/addtowishlist',addToWishlist)
+userRouter.put('/remove/wishlist',removeFromWishlist)
+userRouter.get('/get/wishlist/:userId',getWishlist)
+userRouter.get('/share/wishlist/:userId',shareWishlist)
 
 // cart routes 
  userRouter.post('/cart/add',authenticateUser,addToCart);

@@ -16,6 +16,9 @@ export async function placeOrder(req,res){
             return res.status(400).json({message:"Product Not Found"})
         }
 
+        if(product.quantity < quantity){
+            return res.status(400).json({message:"Requested Quantity Not Available"})
+        }
         const totalPrice= product.price*quantity
 
         const order = new Order ({
