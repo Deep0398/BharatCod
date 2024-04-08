@@ -1,11 +1,17 @@
 import { Products } from "../models/product.model.js";
-
+import upload from "../middleware/multer.js";
 
 // insert a new product
 
-export  async function insertProduct(req,res){
+export  async function insertProduct(req,res,upload){
     try{
-        const {name,description,price,specification,category,image} = req.body
+    
+        const {name,description,price,specification,category} = req.body
+         
+        if(!req.file) {
+            return res.status(400).json({message:"Image is missing"})
+        }
+        const image = req.file.path;
         const products = new Products({
             name,description,price,specification,category,image
         })

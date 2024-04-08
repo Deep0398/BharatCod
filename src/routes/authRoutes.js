@@ -1,13 +1,15 @@
 import express from "express"
 // import passport from "passport";
-import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController} from "../controller/user.controller.js";
+import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController} from "../controller/user.controller.js";
 import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
  import {placeOrder,trackOrder,cancelOrder} from "../controller/order.controller.js"
 import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../controller/wishlist.controller.js";
- 
+ import upload from "../middleware/multer.js";
+
+
 const userRouter = express.Router();
 // Signup and log in
 
@@ -15,6 +17,7 @@ userRouter.post('/signup',signUpController);
 userRouter.get('/get',getUserController);
 userRouter.post('/login',loginController);
 userRouter.get('/role/:role',searchUserController);
+userRouter.put('/edit/:userId',editUserController)
 
 // Forgot password
 
@@ -22,7 +25,7 @@ userRouter.get('/role/:role',searchUserController);
  userRouter.post('/forgot-password',forgotPasswordController);
 
 //  get product by name
-userRouter.post('/new-product',insertProduct);
+userRouter.post('/new-product',upload.single('image'),insertProduct);
  userRouter.get('/Product',searchProductByName);
  userRouter.get('/category',searchProductByCategory);
  userRouter.put('/update/:id',updateProduct);

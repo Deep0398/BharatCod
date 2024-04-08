@@ -10,26 +10,11 @@ export async function signUpController(req,res){
     try {
         const { name,email, password } = req.body;
     
-        // //  Validate email format
-
-        //  if (!validator.isEmail(email)) {
-        //    return res.status(400).send('Invalid email format');
-        //  }
-        
         //  Check if the email is already registered
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
           return res.status(409).send('Email is already registered');
         }
-
-        // //Phone no. validation 
-        // const phoneRegex = /^\d{10}$/;
-        // // // console.log('Phone',phone)
-        // // // console.log('Regex Test',phoneRegex.test(test));
-        // // if (!phoneRegex.test(phone)) {
-        // //   return res.status(400).send('Invalid phone number');
-        // }
-
 
         //  Hash password during registration
 
@@ -104,6 +89,37 @@ export async function searchUserController(req, res) {
     return res.status(500).send(err.message);
   }
 }
+
+// edit user details 
+
+export async function editUserController(req,res){
+  try {
+    const {userId} = req.params
+    const {name,email,password} = req.body
+
+    const existingUser = await userModel.findById(userId)
+    if (!existingUser) {
+      return res.status(404).send('User not found');
+    }
+    if(name){
+      existingUser.name = name
+    }
+    if(email){
+      existingUser.email = email
+    }
+    if(password){
+      const hashedPassword = await bcrypt.hash(password,10)
+      existingUser.password = hashedPassword
+    }
+    await existingUser.save()
+
+    return res.status(200).send('User details updated successfully')
+  }catch(error){
+    console.log(error)
+    res.status(500).json({message:"Internal Server Error"})
+  }
+}
+
 
 // forgot password 
 

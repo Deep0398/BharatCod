@@ -1,43 +1,43 @@
-//  import passport from "passport";
-//  import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+ import passport from "passport";
+ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 //  import { Strategy as FacebookStrategy } from "passport-facebook";
-// import { userModel } from "./src/models/user.model";
+import { userModel } from "./src/models/user.model";
 
-// // Google login
+// Google login
 
-//  passport.use(new GoogleStrategy({
-//      clientID: GOOGLE_CLIENT_ID,
-//      clientSecret: GOOGLE_CLIENT_SECRET,
-//     callbackURL: GOOGLE_CALLBACK_URL
-//   },
-//   async (accessToekn, refreshToken, profile,done)=>{
+ passport.use(new GoogleStrategy({
+     clientID: GOOGLE_CLIENT_ID,
+     clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: GOOGLE_CALLBACK_URL
+  },
+  async (accessToekn, refreshToken, profile,done)=>{
 
-// // Exsiting user check block if not it will create new user as per google account
+// Exsiting user check block if not it will create new user as per google account
 
-//     try{
-//       let user = await userModel.findOne({'googleID': profile.id});
-//       if(!user){
-//         user = await userModel({
-//           name: profile.displayName,
-//           email: profile.emails? profile.email[0].value:null,
-//           googleID: profile.id
-//         })
-//         await user.save();
-//       }
-//     }catch(error){
-//       return done(error);
-//     }
-//   }))
+    try{
+      let user = await userModel.findOne({'googleID': profile.id});
+      if(!user){
+        user = await userModel({
+          name: profile.displayName,
+          email: profile.emails? profile.email[0].value:null,
+          googleID: profile.id
+        })
+        await user.save();
+      }
+    }catch(error){
+      return done(error);
+    }
+  }))
 
 
-//   passport.serializeUser(async(id,done)=>{
-//  try{
-//   const user = await userModel.findById(id)
-//   done(null,user)
-//  }catch(error){
-//   done(error)
-//  }
-// })
+  passport.serializeUser(async(id,done)=>{
+ try{
+  const user = await userModel.findById(id)
+  done(null,user)
+ }catch(error){
+  done(error)
+ }
+})
 
 
 
