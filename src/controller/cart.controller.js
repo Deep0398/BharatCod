@@ -89,7 +89,7 @@ export async function checkout(req, res) {
         const userId= req.user?req.user._id:null;
         const cartItems = await CartItem.find({userId}).populate('productId')
 
-    if(!cartItems||cartItems.length===0){
+    if(!cartItems|| cartItems.length===0){
         return res.status(404).json({message: "Cart is empty"})
     }
      
