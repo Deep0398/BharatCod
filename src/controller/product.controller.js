@@ -3,25 +3,35 @@ import upload from "../middleware/multer.js";
 
 // insert a new product
 
-export  async function insertProduct(req,res,upload){
-    try{
-    
-        const {name,description,price,specification,category} = req.body
-         
-        if(!req.file) {
-            return res.status(400).json({message:"Image is missing"})
-        }
-        const image = req.file.path;
-        const products = new Products({
-            name,description,price,specification,category,image
-        })
+export async function insertProduct(req, res) {
+    try {
+        console.log('Kuldeep');
+        const { name, description, price, specification, category } = req.body;
 
-        const result = await products.save()
-        console.log("product saved")
-        return res.status(200).json(result)
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: "internal server error"})
+        const image = req.file; 
+        console.log(image);
+        
+        if (!image) {
+            return res.status(400).json({ message: "Image is missing" });
+        }
+
+        const imagePath = image.path; 
+        
+        const product = new Products({
+            name,
+            description,
+            price,
+            specification,
+            category,
+            image: imagePath // Assign the path to the product's image field
+        });
+
+        const result = await product.save();
+        console.log("Product saved");
+        return res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 

@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         console.log(file)
         const fileType = file.mimetype.split('/')[0];
-
+           console.log(fileType)
         if(fileType=='image'){
             cb(null , "src/uploads/");
         }
@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
       cb(null, Date.now() + '-' + file.originalname);
     }
+   
   });
 
   const upload = multer({ storage: storage });
