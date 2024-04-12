@@ -3,7 +3,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
-
+import upload  from "../middleware/multer.js";
 
 
 export async function signUpController(req,res){
@@ -90,13 +90,15 @@ export async function searchUserController(req, res) {
   }
 }
 
+
+
 // edit user details 
 
 export async function editUserController(req,res){
   try {
     const {userId} = req.params
-    const {name,email,password} = req.body
-
+    const {name,address,city,country,zip,state,phone} = req.body
+console.log(req.body)
     const existingUser = await userModel.findById(userId)
     if (!existingUser) {
       return res.status(404).send('User not found');
@@ -104,14 +106,29 @@ export async function editUserController(req,res){
     if(name){
       existingUser.name = name
     }
-    if(email){
-      existingUser.email = email
+     
+    if(address){
+      existingUser.address = address
     }
-    if(password){
-      const hashedPassword = await bcrypt.hash(password,10)
-      existingUser.password = hashedPassword
-    }
+if(city){
+  existingUser.city = city
+}
+if(country){
+  existingUser.country = country
+}
+
+if(zip){
+  existingUser.zip = zip
+}
+if(phone){
+  existingUser.phone = phone
+}
+if(state){
+  existingUser.state = state
+}
+  
     await existingUser.save()
+    console.log(existingUser)
 
     return res.status(200).send('User details updated successfully')
   }catch(error){
@@ -120,6 +137,31 @@ export async function editUserController(req,res){
   }
 }
 
+// upload image file
+
+export async function uploadImageController(req,res){
+  try {
+    const {userId} = req.params
+    const user = await userModel.findById(userId)
+
+    if(!user){
+      return res.status(404).send('User not found')
+    }
+     const image = req.file
+
+     if(!image){
+      return res.status(404).send('Image not found')
+     }
+     user.image = image.path
+
+     await user.save()
+
+     return res.status(200).send('Image uploaded successfully')
+  }catch(error){
+    console.log(error)
+    return res.status(500).json({message:"Internal Server Error"})
+  }
+}
 
 // forgot password 
 
