@@ -3,10 +3,25 @@ import upload from "../middleware/multer.js";
 
 // insert a new product
 
+<<<<<<< HEAD
 export async function insertProduct(req, res) {
     try {
         console.log('Kuldeep');
         const { name, description, price, specification, category } = req.body;
+=======
+export  async function insertProduct(req,res,upload){
+    try{
+    
+        const {name,description,price,specification,category} = req.body
+         
+        if(!req.file) {
+            return res.status(400).json({message:"Image is missing"})
+        }
+        const image = req.file.path;
+        const products = new Products({
+            name,description,price,specification,category,image
+        })
+>>>>>>> 03660e8056337128574a07f3e24c7e7f9f01b64e
 
         const image = req.file; 
         console.log(image);
