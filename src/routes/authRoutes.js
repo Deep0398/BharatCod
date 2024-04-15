@@ -1,6 +1,6 @@
 import express from "express"
 // import passport from "passport";
-import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController} from "../controller/user.controller.js";
+import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController} from "../controller/user.controller.js";
 import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
@@ -11,6 +11,7 @@ import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../c
 
 
 const userRouter = express.Router();
+
 // Signup and log in
 
 userRouter.post('/signup',signUpController);
@@ -19,6 +20,8 @@ userRouter.post('/login',loginController);
 userRouter.get('/role/:role',searchUserController);
 userRouter.put('/edit/:userId',editUserController)
 userRouter.put('/upload/:userId',upload.single('image'),uploadImageController)
+userRouter.post('/address/:userId',addAddressContoller)
+userRouter.get('/getAddress/:userId',getUserAddressController)
 // userRouter.put('/address/:userId',userAddressController)
 
 // Forgot password

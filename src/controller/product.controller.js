@@ -38,7 +38,9 @@ export async function insertProduct(req, res) {
 export async function getProducts(req,res){
     try{
         const products = await Products.find()
-        return res.status(200).json(products)
+        const productWithImages = products.map(product =>({...product._doc,image: product.image.map(image =>
+            `${process.env.BASE_URL}/${image}`)}))
+        return res.status(200).json(productsWithImages)
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "internal server error"})

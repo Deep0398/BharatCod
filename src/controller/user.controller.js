@@ -97,7 +97,7 @@ export async function searchUserController(req, res) {
 export async function editUserController(req,res){
   try {
     const {userId} = req.params
-    const {name,address,city,country,zip,state,phone} = req.body
+    const {name,location,city,country,zip,state,phone} = req.body
 console.log(req.body)
     const existingUser = await userModel.findById(userId)
     if (!existingUser) {
@@ -107,8 +107,8 @@ console.log(req.body)
       existingUser.name = name
     }
      
-    if(address){
-      existingUser.address = address
+    if(location){
+      existingUser.location = location
     }
 if(city){
   existingUser.city = city
@@ -137,6 +137,48 @@ if(state){
   }
 }
 
+export async function addAddressContoller(req,res){
+  try{
+    const {userId} = req.params
+    const {name,location,city,country,zip,state,phone} = req.body
+
+    console.log(req.body)
+
+    const existingUser = await userModel.findById(userId)
+
+    if(!existingUser){
+      return res.status(404).send('User not found')
+    }
+    existingUser.addresses.push({name,location,city,country,zip,state,phone})
+
+    await existingUser.save()
+    return res.status(200).send('Address added successfully')
+
+    // console.log(location)
+  }catch (error){
+    console.log(error)
+    res.status(500).json({message:"Internal Server Error"})
+  }
+}
+
+//get user address
+
+export async function getUserAddressController(req, res) {
+  try {
+    const {userId} = req.params
+    const existingUser = await userModel.findById(userId)
+
+    if(!existingUser){
+      return res.status(404).send('User not found')
+    }
+    const addresses = existingUser.addresses
+
+    res.status(200).json(existingUser.addresses)
+  }catch(error){
+    console.log(error)
+    res.status(500).json({message:"Internal Server Error"})
+  }
+}
 // upload image file
 
 export async function uploadImageController(req,res){
