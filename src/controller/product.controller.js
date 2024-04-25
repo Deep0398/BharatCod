@@ -57,6 +57,12 @@ export async function getProducts(req,res){
     try{
         const products = await Products.find()
         const productsWithImages = products.map(product => {
+            console.log(product); // Log the product to see its structure
+            const images = [
+                product.productimage1 ? `${process.env.BASE_URL}/${product.productimage1}` : null,
+                product.productimage2 ? `${process.env.BASE_URL}/${product.productimage2}` : null,
+                product.productimage3 ? `${process.env.BASE_URL}/${product.productimage3}` : null
+            ].filter(image => image !== null); // Remove null values from the array
             return {
                 _id: product._id,
                 title: product.title,
@@ -64,17 +70,14 @@ export async function getProducts(req,res){
                 price: product.price,
                 specification: product.specification,
                 category: product.category,
-                images: [
-                    `${process.env.BASE_URL}/${product.productimage1}`,
-                    `${process.env.BASE_URL}/${product.productimage2}`,
-                    `${process.env.BASE_URL}/${product.productimage3}`
-                ]
+                images: images
             };
         });
-        return res.status(200).json(productsWithImages)
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({message: "internal server error"})
+        
+        return res.status(200).json(productsWithImages);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 //update a product
@@ -143,5 +146,4 @@ export  async function searchProductByCategory(req,res){
         return res.status(500).json({message: "internal server error"})
 }
 }
-
 
