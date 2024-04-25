@@ -1,46 +1,64 @@
-import { Products } from "../models/product.model.js";
-import upload from "../middleware/multer.js";
+    import { Products } from "../models/product.model.js";
+    import upload from "../middleware/multer.js";
 
-// insert a new product
+    // insert a new product
 
-export async function insertProduct(req, res) {
-    try {
-        console.log('Kuldeep');
-        const { name, description, price, specification, category } = req.body;
+    export async function insertProduct(req, res) {
+        try {
+            console.log('Kuldeep');
+            const { title, description, price, specification, category } = req.body;
 
-        const image = req.file; 
-        console.log(image);
+            console.log(req.body)
+
+            const productimage1 = req.files['productimage1'][0] ; 
+            const productimage2 = req.files['productimage2'][0] 
+            const productimage3 = req.files['productimage3'][0] ;
+            
+            if(!productimage1 || !productimage2 || !productimage3){
+                return res.status(400).json({ message: "Image is missing" });
+            }
+            
+            console.log(productimage1, productimage2, productimage3)
+
+            const productimage1path = productimage1.path;
+            const productimage2path = productimage2.path;
+            const productimage3path = productimage3.path;
         
-        if (!image) {
-            return res.status(400).json({ message: "Image is missing" });
+            console.log(productimage1path,productimage2path,productimage3path);
+            
+            // if (!image) {
+            //     return res.status(400).json({ message: "Image is missing" });
+            // // }
+
+            // const imagePath = image.path; 
+            
+            const product = new Products({
+                title,
+                description,
+                price,
+                specification,
+                category,
+                productimage1: productimage1path,
+                productimage2: productimage2path,
+                productimage3: productimage3path
+            
+            });
+    console.log(product)
+            const result = await product.save();
+            console.log("Product saved");
+            return res.status(200).json(result);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal server error" });
         }
-
-        const imagePath = image.path; 
-        
-        const product = new Products({
-            name,
-            description,
-            price,
-            specification,
-            category,
-            image: imagePath // Assign the path to the product's image field
-        });
-
-        const result = await product.save();
-        console.log("Product saved");
-        return res.status(200).json(result);
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ message: "Internal server error" });
     }
-}
 
 export async function getProducts(req,res){
     try{
         const products = await Products.find()
         const productWithImages = products.map(product =>({...product._doc,image: product.image.map(image =>
             `${process.env.BASE_URL}/${image}`)}))
-        return res.status(200).json(productsWithImages)
+        return res.status(200).json(productWithImages)
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "internal server error"})

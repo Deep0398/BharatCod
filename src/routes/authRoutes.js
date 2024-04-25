@@ -30,7 +30,11 @@ userRouter.get('/getAddress/:userId',getUserAddressController)
  userRouter.post('/forgot-password',forgotPasswordController);
 
 //  get product by name
-userRouter.post('/new-product',upload.single('image'),insertProduct);
+userRouter.post('/new-product',upload.fields([
+    {name:'productimage1',maxcount: 1},
+    {name:'productimage2',maxcount: 1},
+    {name:'productimage3',maxcount: 1}
+]),insertProduct);
  userRouter.get('/Product',searchProductByName);
  userRouter.get('/category',searchProductByCategory);
  userRouter.put('/update/:id',updateProduct);
