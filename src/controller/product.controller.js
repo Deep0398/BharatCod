@@ -56,9 +56,22 @@
 export async function getProducts(req,res){
     try{
         const products = await Products.find()
-        const productWithImages = products.map(product =>({...product._doc,image: product.image.map(image =>
-            `${process.env.BASE_URL}/${image}`)}))
-        return res.status(200).json(productWithImages)
+        const productsWithImages = products.map(product => {
+            return {
+                _id: product._id,
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                specification: product.specification,
+                category: product.category,
+                images: [
+                    `${process.env.BASE_URL}/${product.productimage1}`,
+                    `${process.env.BASE_URL}/${product.productimage2}`,
+                    `${process.env.BASE_URL}/${product.productimage3}`
+                ]
+            };
+        });
+        return res.status(200).json(productsWithImages)
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "internal server error"})
