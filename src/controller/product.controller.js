@@ -1,6 +1,7 @@
     import { Products } from "../models/product.model.js";
     import upload from "../middleware/multer.js";
     import urlJoin from "url-join";
+    dotenv.config();
 
     // insert a new product
 
