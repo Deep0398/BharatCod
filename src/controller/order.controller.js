@@ -55,6 +55,25 @@ export async function trackOrder(req,res){
     }
 }
 
+
+export async function updateOrderStatusController(req,res){
+    try{
+        const orderId = req.params.orderId
+        const newStatus = req.body.status
+
+        if (!newStatus){
+            return res.status(400).json({message:"Status is required"})
+        }
+      const order = await Order.findByIdAndUpdate(orderId,{status:newStatus},{new:true});
+    if(!order){
+        return res.status(404).json({message:"Order Not Found"})
+    }
+    return res.status(200).json(order)
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({message:"Internal Server Error"})
+    }
+}
 // Cancel order 
 
 export async function cancelOrder(req,res){
