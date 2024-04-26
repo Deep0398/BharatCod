@@ -8,7 +8,7 @@
     export async function insertProduct(req, res) {
         try {
             console.log('Kuldeep');
-            const { title, description, price, specification, category } = req.body;
+            const { title, description, price, specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
 
             console.log(req.body)
 
@@ -40,6 +40,13 @@
                 price,
                 specification,
                 category,
+                color,
+                size,
+                reviews,
+                rating,
+                stock,
+                sold,
+                brand,
                 productimage1: productimage1path,
                 productimage2: productimage2path,
                 productimage3: productimage3path
@@ -72,6 +79,13 @@ export async function getProducts(req,res){
                 price: product.price,
                 specification: product.specification,
                 category: product.category,
+                color:product.color,
+                size:product.size,
+                reviews:product.reviews,
+                rating:product.rating,
+                stock:product.stock,
+                sold:product.sold,
+                brand:product.brand,
                 images: images
             };
         });
