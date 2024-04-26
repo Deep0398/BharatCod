@@ -8,7 +8,7 @@
           const fileType = file.mimetype.split('/')[0];
           console.log("File type:", fileType); 
           if(fileType=='image'){
-              cb(null , "src/uploads/");
+              cb(null , "uploads/");
           }
           
           else{

@@ -34,7 +34,7 @@ app.use(cors({
   }));
 app.use(express.json());
 
-app.use('/uploads',express.static(path.join(__dirname, 'src/uploads')))
+app.use('/uploads',express.static(path.join(__dirname, '/uploads')))
 console.log('__filename:', __filename);
 console.log('__dirname:', __dirname);
 console.log('Static files directory:', path.join(__dirname, 'src/uploads'));
