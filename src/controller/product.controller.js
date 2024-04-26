@@ -1,5 +1,6 @@
     import { Products } from "../models/product.model.js";
     import upload from "../middleware/multer.js";
+    import urlJoin from "url-join";
 
     // insert a new product
 
@@ -59,9 +60,9 @@ export async function getProducts(req,res){
         const productsWithImages = products.map(product => {
             console.log(product); // Log the product to see its structure
             const images = [
-                product.productimage1 ? `${process.env.BASE_URL}/${product.productimage1}` : null,
-                product.productimage2 ? `${process.env.BASE_URL}/${product.productimage2}` : null,
-                product.productimage3 ? `${process.env.BASE_URL}/${product.productimage3}` : null
+                product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
+                product.productimage2 ? urlJoin(process.env.BASE_URL, product.productimage2.replace(/\\/g, '/')) : null,
+                product.productimage3 ?  urlJoin(process.env.BASE_URL, product.productimage3.replace(/\\/g, '/')) : null
             ].filter(image => image !== null); // Remove null values from the array
             return {
                 _id: product._id,
