@@ -1,5 +1,5 @@
 import Order from "../models/order.model.js"
-import {Products} from "../models/product.model.js";
+    import {Products} from "../models/product.model.js";
 
 
 export async function placeOrder(req,res){
@@ -44,11 +44,30 @@ export async function placeOrder(req,res){
 export async function trackOrder(req,res){
     try {
         const orderId = req.params.orderId
-        const order = await Order.findById(orderId);
+        const order = await Order.findById(orderId).populate({
+            path: 'items.productId',
+            model: Products,
+            select: 'title price'
+        })
+
+        console.log(order)
         if(!order){
             return res.status(404).json({message:"Order Not Found"})
         }
-        return res.status(200).json(order.status)
+
+        const orderDetails = {
+            orderId:order._id,
+            status:order.status,
+            items:order.items.map(item=>({
+                productId:item.productId._id,
+                title:item.productId.title,
+                price:item.productId.price,
+                quantity:item.quantity,
+                totalPrice:item.totalPrice
+            })),
+            createdAt: order.createdAt
+        }
+        return res.status(200).json(orderDetails)
     }catch(error){
         console.log(error)
         return res.status(500).json({message:"Internal Server Error"})
