@@ -43,7 +43,7 @@ userRouter.post('/new-product',upload.fields([
  //order routes
 
  userRouter.post('/order/place',placeOrder)
- userRouter.get('/order/:orderId/status',trackOrder)
+ userRouter.get('/order/:userId/status',trackOrder)
  userRouter.put('/order/:orderId/cancel',cancelOrder)
  userRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
 

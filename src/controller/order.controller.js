@@ -1,5 +1,6 @@
 import Order from "../models/order.model.js"
-    import {Products} from "../models/product.model.js";
+import {Products} from "../models/product.model.js";
+import { userModel } from "../models/user.model.js";
 
 
 export async function placeOrder(req,res){
@@ -43,22 +44,22 @@ export async function placeOrder(req,res){
 
 export async function trackOrder(req,res){
     try {
-        const orderId = req.params.orderId
-        const order = await Order.findById(orderId).populate({
+        const userId = req.params.userId.toString()
+        const orders = await Order.find({ userId: userId }).populate({
             path: 'items.productId',
             model: Products,
             select: 'title price'
         })
 
-        console.log(order)
-        if(!order){
+        console.log(orders)
+        if(!orders){
             return res.status(404).json({message:"Order Not Found"})
         }
 
-        const orderDetails = {
+        const orderDetails = orders.map(order =>({
             orderId:order._id,
             status:order.status,
-            items:order.items.map(item=>({
+            items:order.items && order.items.map(item=>({
                 productId:item.productId._id,
                 title:item.productId.title,
                 price:item.productId.price,
@@ -66,7 +67,7 @@ export async function trackOrder(req,res){
                 totalPrice:item.totalPrice
             })),
             createdAt: order.createdAt
-        }
+        }))
         return res.status(200).json(orderDetails)
     }catch(error){
         console.log(error)
