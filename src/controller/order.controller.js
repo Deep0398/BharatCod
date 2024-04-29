@@ -1,44 +1,99 @@
 import Order from "../models/order.model.js"
 import {Products} from "../models/product.model.js";
 import { userModel } from "../models/user.model.js";
+import { Shipping } from "../models/shipping.model.js";
 
+// export async function placeOrder(req,res){
+//     try {
+//         // console.log("Request Body",req.body)
+//         const {productId, quantity, userId,selectedAddressId} = req.body
 
-export async function placeOrder(req,res){
+//         if(!productId || !quantity || !userId || !selectedAddressId){
+//             return res.status(400).json({message:"ProductId, quantity, or userId is missing"})
+//         }
+
+//         const product = await Products.findById(productId);
+//         if(!product){
+//             return res.status(400).json({message:"Product Not Found"})
+//         }
+
+//         if(product.quantity < quantity){
+//             return res.status(400).json({message:"Requested Quantity Not Available"})
+//         }
+//         const user = await userModel.findById(userId)
+//         if(!user){
+//             return res.status(400).json({message:"User Not Found"})
+//         }
+
+//         const selectedAddress = user.addresses.find(address => address.
+//             _id.toString() === selectedAddressId)
+//          if(!selectedAddress)
+//         const totalPrice= product.price*quantity
+
+//         const order = new Order ({
+//             userId:userId,
+//             shippingAddress:shippingAddress,
+//             items:[{
+//                 productId:productId, 
+//                 quantity:quantity,
+//                 totalPrice:totalPrice
+//             }],
+//             totalPrice:totalPrice
+//         })
+//         // console.log("Order Object", order)
+//         await order.save()
+//         return res.status(201).json(order)
+//     }catch(error){
+//         console.log(error)
+//         return res.status(500).json({message:"Internal Server Error"})
+//     
+export async function placeOrder(req, res) {
     try {
-        // console.log("Request Body",req.body)
-        const {productId, quantity, userId,} = req.body
+        const { productId, quantity, userId } = req.body;
 
-        if(!productId || !quantity || !userId){
-            return res.status(400).json({message:"ProductId, quantity, or userId is missing"})
+        if (!productId || !quantity || !userId) {
+            return res.status(400).json({ message: "ProductId, quantity, or userId is missing" });
         }
 
         const product = await Products.findById(productId);
-        if(!product){
-            return res.status(400).json({message:"Product Not Found"})
+        if (!product) {
+            return res.status(400).json({ message: "Product Not Found" });
         }
 
-        if(product.quantity < quantity){
-            return res.status(400).json({message:"Requested Quantity Not Available"})
+        if (product.quantity < quantity) {
+            return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
-        const totalPrice= product.price*quantity
 
-        const order = new Order ({
-            userId:userId,
-            items:[{
-                productId:productId, 
-                quantity:quantity,
-                totalPrice:totalPrice
+        const user = await userModel.findById(userId).populate('addresses');
+        if (!user) {
+            return res.status(400).json({ message: "User Not Found" });
+        }
+
+        // Assuming the user's shipping address is the latest one added
+        const shippingAddress = user.addresses[user.addresses.length - 1];
+
+        const totalPrice = product.price * quantity;
+
+        const order = new Order({
+            userId: userId,
+            shippingAddress: shippingAddress.toObject(),
+            items: [{
+                productId: productId,
+                quantity: quantity,
+                totalPrice: totalPrice
             }],
-            totalPrice:totalPrice
-        })
-        // console.log("Order Object", order)
-        await order.save()
-        return res.status(201).json(order)
-    }catch(error){
-        console.log(error)
-        return res.status(500).json({message:"Internal Server Error"})
+            totalPrice: totalPrice
+        });
+
+        await order.save();
+        return res.status(201).json(order);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+// }
 
 //track order 
 

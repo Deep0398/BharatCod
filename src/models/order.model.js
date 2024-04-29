@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: false
     },
+    shippingAddress: {
+        type: mongoose.Schema.Types.Mixed,
+        ref: 'Address', 
+        required: true
+    },
     items:[{
         productId:{
             type: mongoose.Schema.Types.ObjectId,

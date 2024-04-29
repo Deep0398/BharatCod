@@ -42,6 +42,10 @@ const ShippingSchema = new mongoose.Schema({
         type:String,
         required:false
     },
+    type:{
+        type: String,
+        enum:['Default','Home','Work']
+    }
 }, { timestamps: true });
 
         export const Shipping = mongoose.model("Shipping", ShippingSchema);
