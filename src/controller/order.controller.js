@@ -49,9 +49,9 @@ import { Shipping } from "../models/shipping.model.js";
 //     
 export async function placeOrder(req, res) {
     try {
-        const { productId, quantity, userId } = req.body;
+        const { productId, quantity, userId,orderAddress } = req.body;
 
-        if (!productId || !quantity || !userId) {
+        if (!productId || !quantity || !userId || !orderAddress) {
             return res.status(400).json({ message: "ProductId, quantity, or userId is missing" });
         }
 
@@ -70,17 +70,18 @@ export async function placeOrder(req, res) {
         }
 
         // Assuming the user's shipping address is the latest one added
-        const shippingAddress = user.addresses[user.addresses.length - 1];
+        // const shippingAddress = user.addresses[user.addresses.length - 1];
 
         const totalPrice = product.price * quantity;
 
         const order = new Order({
             userId: userId,
-            shippingAddress: shippingAddress.toObject(),
+            // shippingAddress: shippingAddress.toObject(),
             items: [{
                 productId: productId,
                 quantity: quantity,
-                totalPrice: totalPrice
+                totalPrice: totalPrice,
+                orderAddress:orderAddress
             }],
             totalPrice: totalPrice
         });

@@ -23,6 +23,9 @@ const orderSchema = new mongoose.Schema({
         },
         totalPrice:{
             type:Number,
+            },
+            orderAddress:{
+                type: String
             }
     }
 ],
