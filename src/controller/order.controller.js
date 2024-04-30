@@ -161,7 +161,7 @@ export async function cancelOrder(req,res){
             return res.status(404).json({message:"Order Not Found"})
         }
         if(order.status ==="canceled"){
-            return res.status(400).json({message:"Order Already Cancelled"})
+            return res.status(401).json({message:"Order Already Cancelled"})
         }
         order.status = "canceled"
         await order.save();
