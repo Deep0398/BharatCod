@@ -120,6 +120,7 @@ export async function trackOrder(req,res){
                 title:item.productId.title,
                 price:item.productId.price,
                 quantity:item.quantity,
+                orderAddress:item.orderAddress,
                 totalPrice:item.totalPrice
             })),
             createdAt: order.createdAt
