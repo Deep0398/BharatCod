@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import upload  from "../middleware/multer.js";
-
+import { generateUniqueReferenceId } from "../services/generateReferenceId.js";
 
 export async function signUpController(req,res){
     try {
@@ -71,10 +71,6 @@ export async function searchUserController(req, res) {
       return res.status(404).send('User not found');
     }
 
-    
-// Hash Password durig login
-
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).send('Invalid password');
@@ -95,18 +91,43 @@ export async function searchUserController(req, res) {
 export async function googleLoginController(req,res){
   try {
     const userData = req.body.user
+    if (!userData) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
     const {email,name} = userData
+const referenceId = generateUniqueReferenceId()
 
-    const existingUser = await User.findOne({email: email})
+    let existingUser = await userModel.findOne({email: email})
     if(!existingUser){
-      const newUser = new userModel({name,email})
+      const newUser = new userModel({name,email,referenceId})
       existingUser = await newUser.save() 
     }
-    const token = jwt.sign({userID: user._id},'greenwebsolutions');
-    return res.status(200).json({ message: "User logged in successfully", user: existingUser,token: token });
+     const token = jwt.sign({userID: existingUser._id},'greenwebsolutions');
+    return res.status(200).json({ message: "User logged in through google successfully", user: existingUser,token: token });
   }catch(error){
     console.error(error);
     return res.status(500).send(error.message);
+  }
+}
+
+export async function phoneLoginController(req,res){
+  try{
+    const userData = req.body.user
+    if(!userData){
+      return res.status(400).json({ message: "Invalid request" });
+    }
+    const {phoneNo} = userData
+    const referenceId = generateUniqueReferenceId()
+    let exisitingUser = await userModel.findOne({phoneNo})
+    if(!exisitingUser){
+      const newUser = new userModel({phoneNo,referenceId})
+      exisitingUser = await newUser.save()
+  }
+  const token = jwt.sign({userID: exisitingUser._id},'greenwebsolutions');
+  return res.status(200).json({ message: "User logged in through Phone No. successfully", user: exisitingUser,token: token });
+}catch(error){
+  console.error(error);
+  return res.status(500).send(error.message);
   }
 }
 

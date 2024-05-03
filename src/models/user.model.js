@@ -36,20 +36,26 @@
 
         name:{
             type: String,
-            required: true
+            required: false
         },
     
         email:{
             type:String,
-            required:true,
+            required:false,
             unique:true
         },
         password:{
             type:String,
-            required:true
+            required:false
             
         },
-    
+    referenceId:{
+        type: String
+        
+    },
+    phoneNo:{
+        type: Number
+    },
 
         role:{
         type:String,
