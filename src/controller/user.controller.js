@@ -82,7 +82,7 @@ export async function searchUserController(req, res) {
 
     //  jwt token
      
-    const token = jwt.sign({userID: user._id},'greenwebsolutions',{expiresIn:'1h'});
+    const token = jwt.sign({userID: user._id},'greenwebsolutions');
     return res.status(200).json({user, token});
   } catch (err) {
     console.error(err);
@@ -90,7 +90,25 @@ export async function searchUserController(req, res) {
   }
 }
 
+// Google login call back 
 
+export async function googleLoginController(req,res){
+  try {
+    const userData = req.body.user
+    const {email,name} = userData
+
+    const existingUser = await User.findOne({email: email})
+    if(!existingUser){
+      const newUser = new userModel({name,email})
+      existingUser = await newUser.save() 
+    }
+    const token = jwt.sign({userID: user._id},'greenwebsolutions');
+    return res.status(200).json({ message: "User logged in successfully", user: existingUser,token: token });
+  }catch(error){
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+}
 
 // edit user details 
 

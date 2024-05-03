@@ -1,6 +1,6 @@
 import express from "express"
 // import passport from "passport";
-import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController} from "../controller/user.controller.js";
+import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController} from "../controller/user.controller.js";
 import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
@@ -17,6 +17,7 @@ const userRouter = express.Router();
 userRouter.post('/signup',signUpController);
 userRouter.get('/get',getUserController);
 userRouter.post('/login',loginController);
+userRouter.post('/googleLogin',googleLoginController)
 userRouter.get('/role/:role',searchUserController);
 userRouter.put('/edit/:userId',editUserController)
 userRouter.put('/upload/:userId',upload.single('image'),uploadImageController)

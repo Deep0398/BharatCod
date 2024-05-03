@@ -8,7 +8,8 @@ import { userModel } from "./src/models/user.model";
  passport.use(new GoogleStrategy({
      clientID: GOOGLE_CLIENT_ID,
      clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: GOOGLE_CALLBACK_URL
+    callbackURL: GOOGLE_CALLBACK_URL,
+    
   },
   async (accessToekn, refreshToken, profile,done)=>{
 
