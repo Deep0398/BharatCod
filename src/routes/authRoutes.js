@@ -28,7 +28,6 @@ userRouter.get('/getAddress/:userId',getUserAddressController)
 
 // Forgot password
 
- userRouter.post('/forgot',forgotPasswordController);
  userRouter.post('/forgot-password',forgotPasswordController);
 
 //  get product by name

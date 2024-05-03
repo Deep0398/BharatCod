@@ -98,12 +98,19 @@ export async function googleLoginController(req,res){
 const referenceId = generateUniqueReferenceId()
 
     let existingUser = await userModel.findOne({email: email})
-    if(!existingUser){
-      const newUser = new userModel({name,email,referenceId})
-      existingUser = await newUser.save() 
-    }
-     const token = jwt.sign({userID: existingUser._id},'greenwebsolutions');
+    if (existingUser) {
+     
+      const token = jwt.sign({ userID: existingUser._id }, 'greenwebsolutions');
+      return res.status(200).json({ message: "User logged in successfully", user: existingUser, token: token });
+    } else {
+      
+      existingUser = new userModel({ name, email,referenceId});
+    
+      existingUser = await existingUser.save();
+      const token = jwt.sign({ userID: existingUser._id }, 'greenwebsolutions');
+      
     return res.status(200).json({ message: "User logged in through google successfully", user: existingUser,token: token });
+    }
   }catch(error){
     console.error(error);
     return res.status(500).send(error.message);
@@ -113,8 +120,8 @@ const referenceId = generateUniqueReferenceId()
 export async function phoneLoginController(req,res){
   try{
     const userData = req.body.user
-    if(!userData){
-      return res.status(400).json({ message: "Invalid request" });
+    if(!userData || !userData.phoneNo){
+      return res.status(400).json({ message: "Phone number Not exist" });
     }
     const {phoneNo} = userData
     const referenceId = generateUniqueReferenceId()
@@ -251,7 +258,9 @@ export async function uploadImageController(req,res){
 
 export async function forgotPasswordController(req, res) {
   try {
-    const { email,password } = req.body;
+    console.log('Received request:', req.body);
+    const { email } = req.body;
+    
 
     if (!validator.isEmail(email)) {
       return res.status(400).send('Invalid email format');
@@ -260,25 +269,37 @@ export async function forgotPasswordController(req, res) {
     if (!user) {
       return res.status(404).send('User not found');
     }
+    
      
     const token = jwt.sign({userID: user._id},'greenwebsolutions',{expiresIn:'1h'});
 
-
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false,
       auth: {
-        user: '<EMAIL>',
-        pass: '<PASSWORD>'
+        user: '	linnea52@ethereal.email',
+        pass: 'x4HMNZ3kPncWEKb38u'
       }
-    })
+    });
+
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   port: 587,
+    //   secure: false,
+    //   auth: {
+    //     user: 'gwstelekuldeep@gmail.com',
+    //     pass: 'GWSKuldeep@25'
+    //   }
+    // })
     
     const mailOptions = {
-      from : 'your_mail@gmail.com',
-      to : 'User_mail@gmail.com',
+      from : 'linnea52@ethereal.email',
+      to : 'gwsteledropati@gmail.com',
       subject : 'Reset Password',
       text : 'You are receiving this because you have requested to reset password of your account with Bharatlod.\n\n' +
       'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-      'http://localhost:3000/resetPassword/' + token + '\n\n' +
+      'http://localhost:9000/resetPassword/' + token + '\n\n' +
       'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     }
 
@@ -292,7 +313,9 @@ transporter.sendMail(mailOptions, (error, info) => {
   if (error) {
     console.log(error);
   } else {
-    console.log('Email sent:'+ info.response);
+    console.log('Email sent:', info.messageId);
+    console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
+    return res.status(200).send('Email sent successfully');
   }
 })
   }catch (error) {
