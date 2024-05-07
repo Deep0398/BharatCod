@@ -28,7 +28,7 @@
             required: false
         },
         type:{
-            tpye:String
+            type:String
          
         }
     })
