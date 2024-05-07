@@ -28,8 +28,8 @@
             required: false
         },
         type:{
-            tpye:String,
-            enum:['Default','Home','Work']
+            tpye:String
+         
         }
     })
         const userSchema = new mongoose.Schema({
