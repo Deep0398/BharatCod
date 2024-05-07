@@ -28,11 +28,7 @@
         
             console.log(productimage1path,productimage2path,productimage3path);
             
-            // if (!image) {
-            //     return res.status(400).json({ message: "Image is missing" });
-            // // }
-
-            // const imagePath = image.path; 
+          
             
             const product = new Products({
                 title,

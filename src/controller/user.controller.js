@@ -198,7 +198,7 @@ export async function addAddressContoller(req,res){
     if(!existingUser){
       return res.status(404).send('User not found')
     }
-    existingUser.addresses.push({name,location,city,country,zip,state,phone})
+    existingUser.addresses.push({name,location,city,country,zip,state,phone,type})
 
     await existingUser.save()
     return res.status(200).send('Address added successfully')
@@ -278,8 +278,8 @@ export async function forgotPasswordController(req, res) {
       port: 587,
       secure: false,
       auth: {
-        user: '	linnea52@ethereal.email',
-        pass: 'x4HMNZ3kPncWEKb38u'
+        user: '	bharatcod@greenwebsoftwaredevelopment.com',
+        pass: 'Bharatcod@123'
       }
     });
 
@@ -294,8 +294,8 @@ export async function forgotPasswordController(req, res) {
     // })
     
     const mailOptions = {
-      from : 'linnea52@ethereal.email',
-      to : 'gwsteledropati@gmail.com',
+      from : 'bharatcod@greenwebsoftwaredevelopment.com',
+       to : 'gwstelekuldeep@gmail.com',
       subject : 'Reset Password',
       text : 'You are receiving this because you have requested to reset password of your account with Bharatlod.\n\n' +
       'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
