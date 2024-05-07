@@ -228,6 +228,28 @@ export async function getUserAddressController(req, res) {
     res.status(500).json({message:"Internal Server Error"})
   }
 }
+
+export async function deleteAddressController(req,res){
+  try{
+    const {userId,addressId} = req.params
+     const exisitingUser = await userModel.findById(userId)
+     if(!exisitingUser){
+      return res.status(404).json({message:"User Not found"})
+     }
+     const addressIndex = exisitingUser.addresses.findIndex(address => address._id.toString() ===addressId)
+  
+if(!addressIndex === -1){
+  return res.status(404).send('Address not Found')
+}  
+ exisitingUser.addresses.splice(addressIndex,1)
+
+ await exisitingUser.save()
+ return res.status(200).send('Address deleted Sucessfully')
+    }catch(error){
+      console.log(error)
+      return res.status(500).json({message:"Internal Server Error"})
+    }
+}
 // upload image file
 
 export async function uploadImageController(req,res){
