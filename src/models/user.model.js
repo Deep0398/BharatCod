@@ -29,7 +29,6 @@
         },
         type:{
             type:String
-         
         }
     })
         const userSchema = new mongoose.Schema({

@@ -159,3 +159,8 @@ export  async function searchProductByCategory(req,res){
 }
 }
 
+// export async function getTopSaleProducts(req,res){
+//     try{
+//         const getTopSaleProducts = await Products.find().sort({sold: -1}).limit(20)
+//     }
+// }

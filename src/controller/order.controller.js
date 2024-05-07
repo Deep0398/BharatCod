@@ -3,87 +3,67 @@ import {Products} from "../models/product.model.js";
 import { userModel } from "../models/user.model.js";
 import { Shipping } from "../models/shipping.model.js";
 
-// export async function placeOrder(req,res){
-//     try {
-//         // console.log("Request Body",req.body)
-//         const {productId, quantity, userId,selectedAddressId} = req.body
 
-//         if(!productId || !quantity || !userId || !selectedAddressId){
-//             return res.status(400).json({message:"ProductId, quantity, or userId is missing"})
-//         }
-
-//         const product = await Products.findById(productId);
-//         if(!product){
-//             return res.status(400).json({message:"Product Not Found"})
-//         }
-
-//         if(product.quantity < quantity){
-//             return res.status(400).json({message:"Requested Quantity Not Available"})
-//         }
-//         const user = await userModel.findById(userId)
-//         if(!user){
-//             return res.status(400).json({message:"User Not Found"})
-//         }
-
-//         const selectedAddress = user.addresses.find(address => address.
-//             _id.toString() === selectedAddressId)
-//          if(!selectedAddress)
-//         const totalPrice= product.price*quantity
-
-//         const order = new Order ({
-//             userId:userId,
-//             shippingAddress:shippingAddress,
-//             items:[{
-//                 productId:productId, 
-//                 quantity:quantity,
-//                 totalPrice:totalPrice
-//             }],
-//             totalPrice:totalPrice
-//         })
-//         // console.log("Order Object", order)
-//         await order.save()
-//         return res.status(201).json(order)
-//     }catch(error){
-//         console.log(error)
-//         return res.status(500).json({message:"Internal Server Error"})
-//     
 export async function placeOrder(req, res) {
     try {
-        const { productId, quantity, userId,orderAddress } = req.body;
+        // const { productId, quantity, userId,orderAddress } = req.body;
 
-        if (!productId || !quantity || !userId || !orderAddress) {
-            return res.status(400).json({ message: "ProductId, quantity, or userId is missing" });
+        // if (!productId || !quantity || !userId || !orderAddress) {
+        //     return res.status(400).json({ message: "ProductId, quantity, or userId is missing" });
+        // }
+         const {items,userId} = req.body
+
+         if(!items || !userId){
+            return res.status(400).json({message:"Items or UserID is missing"})
+         }
+        const user = await userModel.findById(userId).populate('addresses')
+        if(!user){
+            return res.status(400).json({message:"User Not Found"})
         }
+    for(const item of items){
+        const { productId, quantity, orderAddress } = item;
 
         const product = await Products.findById(productId);
         if (!product) {
             return res.status(400).json({ message: "Product Not Found" });
         }
 
-        if (product.quantity < quantity) {
+        if (product.stock < quantity) {
             return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
+        item.totalPrice = product.price * quantity;
+    
 
-        const user = await userModel.findById(userId).populate('addresses');
-        if (!user) {
-            return res.status(400).json({ message: "User Not Found" });
-        }
+        // const user = await userModel.findById(userId).populate('addresses');
+        // if (!user) {
+        //     return res.status(400).json({ message: "User Not Found" });
+        // }
 
-        // Assuming the user's shipping address is the latest one added
-        // const shippingAddress = user.addresses[user.addresses.length - 1];
+     if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
+        return res.status(400).json({message:'Invalid total price for item'})
+     }
+    }
 
-        const totalPrice = product.price * quantity;
+         const totalPrice = items.reduce((total, item) => total + item.totalPrice, 0);
+         if(isNaN(totalPrice) || !isFinite(totalPrice)){
+            return res.status(400).json({message:'Invalid total price for Order'})
+         }
+
+        const orderItems = items.map(item =>{
+            const { productId, quantity, totalPrice, orderAddress } = item;
+            return {
+            productId : item.productId,
+            quantity : item.quantity,
+            totalPrice : item.totalPrice,
+            orderAddress: item.orderAddress
+            }
+        })
 
         const order = new Order({
             userId: userId,
-            // shippingAddress: shippingAddress.toObject(),
-            items: [{
-                productId: productId,
-                quantity: quantity,
-                totalPrice: totalPrice,
-                orderAddress:orderAddress
-            }],
+            items: orderItems,
             totalPrice: totalPrice
+           
         });
 
         await order.save();
