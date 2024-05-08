@@ -220,7 +220,7 @@ export  async function searchProductByCategory(req,res){
 export async function getTopSaleProducts(req,res){
     try{
         const topSaleProducts = await Products.find().sort({sold: -1}).limit(20)
-        const productsWithImages = products.map(product => {
+        const productsWithImages = topSaleProducts.map(product => {
             const images = [
                 product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
                 product.productimage2 ? urlJoin(process.env.BASE_URL, product.productimage2.replace(/\\/g, '/')) : null,
