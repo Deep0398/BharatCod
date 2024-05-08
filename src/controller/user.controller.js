@@ -138,6 +138,15 @@ export async function phoneLoginController(req,res){
   }
 }
 
+export async function logoutController(req,res){
+  try{
+    localStorage.removeItem('jwtToken')
+    return res.status(200).send({message:"User logged Out Sucessfully"})
+  }catch(err){
+    console.error(err);
+    return res.status(500).send(err.message);
+  }
+}
 // edit user details 
 
 export async function editUserController(req,res){

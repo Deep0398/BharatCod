@@ -245,7 +245,7 @@ export async function getTopSaleProducts(req,res){
             };
         });
         console.log(productsWithImages)
-        return res.status(200).json(topSaleProducts)
+        return res.status(200).json(productsWithImages)
     }catch(err){
         console.log(err)
         return res.status(500).json({message:"Internal server error"})
