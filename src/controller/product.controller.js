@@ -180,12 +180,12 @@ export  async function searchProductByCategory(req,res){
         if (query.toLowerCase() === "men's clothing" || query.toLowerCase() === "women's clothing") {
             products = await Products.find({ category: query });
         } else {
-        const products = await Products.find({
+         products = await Products.find({
             category: {
                 $regex: new RegExp(query, 'i')
             }
         })
-    }
+        }
         const productsWithImages = products.map(product => {
             const images = [
                 product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
