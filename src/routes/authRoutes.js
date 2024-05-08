@@ -1,7 +1,7 @@
 import express from "express"
 // import passport from "passport";
 import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController} from "../controller/user.controller.js";
-import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts} from "../controller/product.controller.js";
+import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts,getTopSaleProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
@@ -41,6 +41,7 @@ userRouter.post('/new-product',upload.fields([
  userRouter.get('/category',searchProductByCategory);
  userRouter.put('/update/:id',updateProduct);
  userRouter.get('/getAllProducts',getProducts)
+ userRouter.get('/getTopSaleProducts',getTopSaleProducts)
 
  //order routes
 

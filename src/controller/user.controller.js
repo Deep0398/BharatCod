@@ -305,15 +305,6 @@ export async function forgotPasswordController(req, res) {
       }
     });
 
-    // const transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   port: 587,
-    //   secure: false,
-    //   auth: {
-    //     user: 'gwstelekuldeep@gmail.com',
-    //     pass: 'GWSKuldeep@25'
-    //   }
-    // })
     
     const mailOptions = {
       from : 'bharatcod@greenwebsoftwaredevelopment.com',

@@ -122,11 +122,41 @@ export  async function searchProductByName(req,res){
             return res.status(400).json({message: "provide a query"})
         }
 
+        let products;
+        if (query.toLowerCase() === "men's clothing" || query.toLowerCase() === "women's clothing") {
+            products = await Products.find({ title: query });
+        } else {
         const products = await Products.find({
-            name: {
+            title: {
                 $regex: new RegExp(query, 'i')
             }
         })
+    }
+            const productsWithImages = products.map(product => {
+                const images = [
+                    product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
+                    product.productimage2 ? urlJoin(process.env.BASE_URL, product.productimage2.replace(/\\/g, '/')) : null,
+                    product.productimage3 ? urlJoin(process.env.BASE_URL, product.productimage3.replace(/\\/g, '/')) : null
+                ].filter(image => image !== null);
+    
+                return {
+                    _id: product._id,
+                    title: product.title,
+                    description: product.description,
+                    price: product.price,
+                    specification: product.specification,
+                    category: product.category,
+                    color: product.color,
+                    size: product.size,
+                    reviews: product.reviews,
+                    rating: product.rating,
+                    stock: product.stock,
+                    sold: product.sold,
+                    brand: product.brand,
+                    images: images
+                };
+            });
+            console.log(productsWithImages)
         return res.status(200).json(products)
     }catch(err){
         console.log(err)
@@ -146,12 +176,16 @@ export  async function searchProductByCategory(req,res){
         if(!query){
             return res.status(400).json({message: "provide a query"})
         }
-
+        let products;
+        if (query.toLowerCase() === "men's clothing" || query.toLowerCase() === "women's clothing") {
+            products = await Products.find({ category: query });
+        } else {
         const products = await Products.find({
             category: {
                 $regex: new RegExp(query, 'i')
             }
         })
+    }
         const productsWithImages = products.map(product => {
             const images = [
                 product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
@@ -183,8 +217,37 @@ export  async function searchProductByCategory(req,res){
 }
 }
 
-// export async function getTopSaleProducts(req,res){
-//     try{
-//         const getTopSaleProducts = await Products.find().sort({sold: -1}).limit(20)
-//     }
-// }
+export async function getTopSaleProducts(req,res){
+    try{
+        const topSaleProducts = await Products.find().sort({sold: -1}).limit(20)
+        const productsWithImages = products.map(product => {
+            const images = [
+                product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
+                product.productimage2 ? urlJoin(process.env.BASE_URL, product.productimage2.replace(/\\/g, '/')) : null,
+                product.productimage3 ? urlJoin(process.env.BASE_URL, product.productimage3.replace(/\\/g, '/')) : null
+            ].filter(image => image !== null);
+
+            return {
+                _id: product._id,
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                specification: product.specification,
+                category: product.category,
+                color: product.color,
+                size: product.size,
+                reviews: product.reviews,
+                rating: product.rating,
+                stock: product.stock,
+                sold: product.sold,
+                brand: product.brand,
+                images: images
+            };
+        });
+        console.log(productsWithImages)
+        return res.status(200).json(topSaleProducts)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message:"Internal server error"})
+    }
+}

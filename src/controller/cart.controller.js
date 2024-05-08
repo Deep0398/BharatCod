@@ -2,7 +2,7 @@ import CartItem from "../models/cart.model.js";
 import { Products } from "../models/product.model.js"
 import Order from "../models/order.model.js"
 
-// To add product to cart 
+
 
 export async function addToCart(req, res){
     console.log(req.user)

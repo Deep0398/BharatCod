@@ -1,6 +1,4 @@
 import adminModel from "../models/admin.model.js";
-import { userModel } from "../models/user.model.js";
-import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 
@@ -23,8 +21,6 @@ export async function signupController(req,res){
     }
 
 }
-
-
 export async function loginController(req,res){
     try {
 

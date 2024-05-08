@@ -47,7 +47,6 @@ export async function updateShippingAddress(req,res){
         res.status(500).json({message: "internal server error"})
     }
 
-
 }
 
 // delete shipping adress

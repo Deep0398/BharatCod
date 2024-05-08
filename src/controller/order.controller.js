@@ -6,11 +6,7 @@ import { Shipping } from "../models/shipping.model.js";
 
 export async function placeOrder(req, res) {
     try {
-        // const { productId, quantity, userId,orderAddress } = req.body;
-
-        // if (!productId || !quantity || !userId || !orderAddress) {
-        //     return res.status(400).json({ message: "ProductId, quantity, or userId is missing" });
-        // }
+        
          const {items,userId} = req.body
 
          if(!items || !userId){
@@ -21,7 +17,7 @@ export async function placeOrder(req, res) {
             return res.status(400).json({message:"User Not Found"})
         }
     for(const item of items){
-        const { productId, quantity, orderAddress } = item;
+        const { productId, quantity, orderAddress,title } = item;
 
         const product = await Products.findById(productId);
         if (!product) {
@@ -32,12 +28,7 @@ export async function placeOrder(req, res) {
             return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
         item.totalPrice = product.price * quantity;
-    
-
-        // const user = await userModel.findById(userId).populate('addresses');
-        // if (!user) {
-        //     return res.status(400).json({ message: "User Not Found" });
-        // }
+      item.title = product.title
 
      if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
         return res.status(400).json({message:'Invalid total price for item'})
@@ -50,8 +41,9 @@ export async function placeOrder(req, res) {
          }
 
         const orderItems = items.map(item =>{
-            const { productId, quantity, totalPrice, orderAddress } = item;
+            const { productId, quantity, totalPrice, orderAddress,title} = item;
             return {
+                title: item.title,
             productId : item.productId,
             quantity : item.quantity,
             totalPrice : item.totalPrice,
@@ -67,16 +59,13 @@ export async function placeOrder(req, res) {
         });
 
         await order.save();
-        return res.status(201).json(order);
+        return res.status(200).json(order);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-// }
-
-//track order 
 
 export async function trackOrder(req,res){
     try {
