@@ -152,7 +152,7 @@ export async function logoutController(req,res){
 export async function editUserController(req,res){
   try {
     const {userId} = req.params
-    const {name,location,city,country,zip,state,phone,type} = req.body
+    const {name,location,city,country,zip,state,phone} = req.body
 console.log(req.body)
     const existingUser = await userModel.findById(userId)
     if (!existingUser) {
@@ -181,9 +181,7 @@ if(phone){
 if(state){
   existingUser.state = state
 }
-if(state){
-  existingUser.state = state
-}
+
   
     await existingUser.save()
     console.log(existingUser)

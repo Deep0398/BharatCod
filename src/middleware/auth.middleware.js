@@ -30,11 +30,13 @@ export async function checkAdminLogin(req,res,next){
         if (!req.headers?.authorization?.startsWith("Bearer")){
             return res.send(error(401,"authorization header is required"));
            }
+           const secretKey = 'greenwebsolutions'
         const accessToken = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(accessToken,secretKey);
         req._id = decoded?._doc?._id;
         next();
-    } catch (err) {
-        return res.send(error(500,err.message));
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({message:"Internal Server Error"})
     }
 }

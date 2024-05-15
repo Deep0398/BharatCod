@@ -1,10 +1,10 @@
 import express from "express"
-import { signupController,loginController } from "../controller/admin.controller.js";
+import { signupController,loginController,changeUserRoleController} from "../controller/admin.controller.js";
 import { checkAdminLogin } from "../middleware/auth.middleware.js"
 
 const adminRouter = express.Router()
 
-adminRouter.post("/",signupController);
+adminRouter.post("/signup",signupController);
 adminRouter.post("/login",loginController);
-
+adminRouter.put('/changeUserRole/:userId',checkAdminLogin,changeUserRoleController)
 export default adminRouter
