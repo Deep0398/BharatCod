@@ -58,6 +58,21 @@
         }
     }
 
+    export async function deleteProductController(req,res){
+        try {
+            const productId = req.params.productId
+         
+            const product = await Products.findById(productId)
+            if(!product){
+                return res.status(400).send({message:"Product Not Found"})
+            }
+            await Products.findByIdAndDelete(productId)
+            return res.status(200).send({message:"Product Deleted sucessfully"})
+        }catch(error){
+            console.log(error)
+            return res.status(500).send({message:"Internal Server Error"})
+        }
+    }
 export async function getProducts(req,res){
     try{
         const products = await Products.find()

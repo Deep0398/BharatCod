@@ -86,6 +86,22 @@ export async function searchUserController(req, res) {
   }
 }
 
+export async function deleteUserController(req,res){
+  try {
+    const userId = req.params.userId
+
+    const user = await userModel.findById(userId)
+    if(!user){
+      return res.status(400).send({message:"User Not Found"})
+    }
+    await userModel.findByIdAndDelete(userId)
+
+    return res.status(200).send({message:"User Deleted Sucessfully"})
+  }catch(error){
+    console.log(error)
+    return res.status(500).send({message:"Internal Server Error"})
+  }
+}
 // Google login call back 
 
 export async function googleLoginController(req,res){

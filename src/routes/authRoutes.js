@@ -10,6 +10,7 @@ import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../c
  import upload from "../middleware/multer.js";
 
 
+
 const userRouter = express.Router();
 
 // Signup and log in
@@ -43,6 +44,7 @@ userRouter.post('/new-product',upload.fields([
  userRouter.put('/update/:id',updateProduct);
  userRouter.get('/getAllProducts',getProducts)
  userRouter.get('/getTopSaleProducts',getTopSaleProducts)
+ 
 
  //order routes
 
