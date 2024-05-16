@@ -84,6 +84,7 @@ export async function trackOrder(req,res){
         const orderDetails = orders.map(order =>({
             orderId:order._id,
             status:order.status,
+            totalPrice:order.totalPrice,
             items:order.items && order.items.map(item=>({
                 productId:item.productId._id,
                 title:item.productId.title,
