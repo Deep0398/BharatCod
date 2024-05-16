@@ -31,7 +31,7 @@ export async function checkAdminLogin(req,res,next){
             return res.send(error(401,"authorization header is required"));
            }
            const secretKey = 'greenwebsolutions'
-        const accessToken = req.headers.authorization.split(" ")[1];
+        const accessToken = req.headers.authorization.split(" ")[7];
         const decoded = jwt.verify(accessToken,secretKey);
         req._id = decoded?._doc?._id;
         next();

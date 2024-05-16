@@ -8,6 +8,6 @@ const adminRouter = express.Router()
 adminRouter.post("/signup",signupController);
 adminRouter.post("/login",loginController);
 adminRouter.put('/changeUserRole/:userId',checkAdminLogin,changeUserRoleController)
-adminRouter.delete('/deleteProducts/:productId',checkAdminLogin,deleteProductController)
+adminRouter.delete('/deleteProducts/:productId',deleteProductController)
 adminRouter.delete('/deleteUser',checkAdminLogin,deleteUserController)
 export default adminRouter
