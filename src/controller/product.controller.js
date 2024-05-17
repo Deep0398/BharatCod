@@ -1,6 +1,7 @@
     import { Products } from "../models/product.model.js";
     import upload from "../middleware/multer.js";
     import urlJoin from "url-join";
+    import CategoryModel from "../models/category.model.js";
     
 
     // insert a new product
@@ -8,7 +9,7 @@
     export async function insertProduct(req, res) {
         try {
             console.log('Kuldeep');
-            const { title, description, price, specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
+            const { title, description,regularPrice, salePrice,  specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
 
             console.log(req.body)
 
@@ -27,15 +28,25 @@
             const productimage3path = productimage3.path;
         
             console.log(productimage1path,productimage2path,productimage3path);
-            
-          
+
+            const categories = await CategoryModel.findOne({name:category});
+            if (!categories) {
+                return res.status(400).json({ message: "Invalid category" });
+            }
+            let discount = 0;
+            if (salePrice < regularPrice) {
+                discount = ((regularPrice - salePrice) / regularPrice) * 100;
+            }
             
             const product = new Products({
                 title,
                 description,
-                price,
+                regularPrice,
+                salePrice,
+                price: salePrice,
+                discount,
                 specification,
-                category,
+                category: category,
                 color,
                 size,
                 reviews,

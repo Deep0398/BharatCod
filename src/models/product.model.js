@@ -10,18 +10,26 @@ const productSchema = new mongoose.Schema({
         type:String,
         
     },
-    price:{
+    regularPrice:{
+        type:Number,
+        
+    },
+    salePrice:{
         type:Number,
         required:true
     },
+    // price:{
+    //     type:Number,
+    //     required:true
+    // },
+    discount: { type: Number, default: 0 },
     specification:{
         type:String,
         
     },
     category:{
-        type:String,
-        enum:['mobiles', 'electronics', 'accessories','clothing','beauty',"men's clothing","women's clothing","jewelery"]
-       
+        type: String,
+        required: true  
     },
     productimage1:{
         type:String,    
@@ -59,7 +67,14 @@ const productSchema = new mongoose.Schema({
     brand:{
         type:String,
     }
+});
 
-
+productSchema.pre('save', function(next) {
+    if (this.salePrice < this.regularPrice) {
+        this.discount = ((this.regularPrice - this.salePrice) / this.regularPrice) * 100;
+    } else {
+        this.discount = 0;
+    }
+    next();
 });
 export const Products = mongoose.model('Products', productSchema);
