@@ -147,6 +147,26 @@ export async function cancelOrder(req,res){
 }
 }
 
+export async function getAllOrders(req, res) {
+    try {
+        const orders = await Order.find().populate({
+            path: 'items.productId',
+            model: Products,
+            select: 'title salePrice'
+        });
+
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: "No orders found" });
+        }
+
+        return res.status(200).json(orders);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
 
 
 
