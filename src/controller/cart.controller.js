@@ -17,15 +17,17 @@ export async function addToCart(req, res){
         { return res.status(404).json({message: "Product not found"})}
     
 
-    const totalPrice = product.price * quantity;
+    const totalPrice = product.salePrice * quantity;
     
 //save that product to user by user ID to show in user account 
 
     const newItem= new CartItem({
         productId,
         quantity,
+        price:product.salePrice,
         userID: req.user._id,
-        totalPrice
+        totalPrice,
+        discount: product.discount
     })
 console.log(newItem)
     await newItem.save()
@@ -46,7 +48,7 @@ export async function viewCart(req, res) {
 
         let totalPrice = 0;
         for (const item of cartItems){
-            totalPrice += item.productId.price * item.quantity;
+            totalPrice += item.productId.salePrice * item.quantity;
         }
         return res.status(200).json({cartItems, totalPrice})
     }catch (error){
@@ -70,7 +72,7 @@ export async function updateCartItem(req, res) {
             return res.status(404).json({message: "Cart item not found"})
     }
     cartItem.quantity = quantity
-    cartItem.totalPrice = cartItem.productId.price * quantity
+    cartItem.totalPrice = cartItem.productId.salePrice * quantity
 
     console.log('Updated cart Item ',cartItem)
 
@@ -95,7 +97,7 @@ export async function checkout(req, res) {
      
     let totalPrice = 0;
     const orderItems = cartItems.map(item=>{
-        totalPrice += item.productId.price * item.quantity
+        totalPrice += item.productId.salePrice * item.quantity
         return {
             productId: item.productId._id,
             quantity: item.quantity,

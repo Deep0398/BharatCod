@@ -98,6 +98,7 @@ export async function getProducts(req,res){
                 _id: product._id,
                 title: product.title,
                 description: product.description,
+                price: product.salePrice,
                 regularPrice: product.regularPrice,
                 salePrice : product.salePrice,
                 discount : product.discount,
@@ -186,7 +187,9 @@ export  async function searchProductByName(req,res){
                     _id: product._id,
                     title: product.title,
                     description: product.description,
-                    price: product.price,
+                    price: product.salePrice,
+                    regularPrice: product.regularPrice,
+                    salePrice: product.salePrice,
                     specification: product.specification,
                     category: product.category,
                     color: product.color,
@@ -196,7 +199,8 @@ export  async function searchProductByName(req,res){
                     stock: product.stock,
                     sold: product.sold,
                     brand: product.brand,
-                    images: images
+                    images: images,
+                    discount:product.discount
                 };
             });
             console.log(productsWithImages)
@@ -240,7 +244,9 @@ export  async function searchProductByCategory(req,res){
                 _id: product._id,
                 title: product.title,
                 description: product.description,
-                price: product.price,
+                price: product.salePrice,
+                    regularPrice: product.regularPrice,
+                    salePrice: product.salePrice,
                 specification: product.specification,
                 category: product.category,
                 color: product.color,
@@ -250,7 +256,8 @@ export  async function searchProductByCategory(req,res){
                 stock: product.stock,
                 sold: product.sold,
                 brand: product.brand,
-                images: images
+                images: images,
+                discount:product.discount
             };
         });
         return res.status(200).json(productsWithImages)
@@ -274,7 +281,9 @@ export async function getTopSaleProducts(req,res){
                 _id: product._id,
                 title: product.title,
                 description: product.description,
-                price: product.price,
+                price: product.salePrice,
+                    regularPrice: product.regularPrice,
+                    salePrice: product.salePrice,
                 specification: product.specification,
                 category: product.category,
                 color: product.color,
@@ -284,7 +293,8 @@ export async function getTopSaleProducts(req,res){
                 stock: product.stock,
                 sold: product.sold,
                 brand: product.brand,
-                images: images
+                images: images,
+                discount:product.discount
             };
         });
         console.log(productsWithImages)

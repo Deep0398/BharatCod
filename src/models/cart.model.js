@@ -19,7 +19,21 @@ const cartItemSchema = new mongoose.Schema({
     totalPrice:{
         type: Number,
         required: true
-    }
+    },
+    regularPrice:{
+        type:Number,
+        
+    },
+    salePrice:{
+        type:Number,
+        
+    },
+    price:{
+        type:Number,
+        
+    },
+    discount: { type: Number, default: 0 },
+
 })
 
 const CartItem = mongoose.model('CartItem',cartItemSchema)

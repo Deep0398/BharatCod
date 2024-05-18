@@ -38,6 +38,19 @@ status:{
     enum:['placed','shipped','delivered','canceled'],
     default:'placed'
 },
+regularPrice:{
+    type:Number,
+    
+},
+salePrice:{
+    type:Number,
+    
+},
+price:{
+    type:Number,
+    
+},
+discount: { type: Number, default: 0 },
 
 },
 {timestamps:true})

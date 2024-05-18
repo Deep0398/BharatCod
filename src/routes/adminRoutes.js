@@ -13,6 +13,6 @@ adminRouter.delete('/deleteProducts/:productId',deleteProductController)
 adminRouter.delete('/deleteUser',checkAdminLogin,deleteUserController)
 adminRouter.post('/addcategory',addCategory)
 adminRouter.get('/getcategory',getCategories)
-adminRouter.delete('/deletecategory',deleteCategory)
+adminRouter.delete('/deletecategory/:categoryId',deleteCategory)
 adminRouter.put('/updatecategory',updateCategory)
 export default adminRouter

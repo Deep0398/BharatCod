@@ -2,6 +2,7 @@ import Order from "../models/order.model.js"
 import {Products} from "../models/product.model.js";
 import { userModel } from "../models/user.model.js";
 import { Shipping } from "../models/shipping.model.js";
+import CategoryModel from "../models/category.model.js";
 
 
 export async function placeOrder(req, res) {
@@ -17,7 +18,7 @@ export async function placeOrder(req, res) {
             return res.status(400).json({message:"User Not Found"})
         }
     for(const item of items){
-        const { productId, quantity, orderAddress,title } = item;
+        const { productId, quantity, orderAddress,title,salePrice,regularPrice,discount,category } = item;
 
         const product = await Products.findById(productId);
         if (!product) {
@@ -27,7 +28,7 @@ export async function placeOrder(req, res) {
         if (product.stock < quantity) {
             return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
-        item.totalPrice = product.price * quantity;
+        item.totalPrice = product.salePrice * quantity;
       item.title = product.title
 
      if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
@@ -88,7 +89,7 @@ export async function trackOrder(req,res){
             items:order.items && order.items.map(item=>({
                 productId:item.productId._id,
                 title:item.productId.title,
-                price:item.productId.price,
+                price:item.productId.salePrice,
                 quantity:item.quantity,
                 orderAddress:item.orderAddress,
                 totalPrice:item.totalPrice
