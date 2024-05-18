@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
     },
     salePrice:{
         type:Number,
-        required:true
+        
     },
     // price:{
     //     type:Number,

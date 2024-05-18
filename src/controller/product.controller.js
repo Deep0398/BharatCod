@@ -3,13 +3,13 @@
     import urlJoin from "url-join";
     import CategoryModel from "../models/category.model.js";
     
-
+ 
     // insert a new product
 
     export async function insertProduct(req, res) {
         try {
             console.log('Kuldeep');
-            const { title, description,regularPrice, salePrice,  specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
+            const { title, description,regularPrice, salePrice,specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
 
             console.log(req.body)
 
