@@ -125,10 +125,25 @@ export async function getProducts(req,res){
 export async function updateProduct(req,res){
     try{
         const {id} = req.params
-        const {name,description,price,specification,category,image} = req.body
+        const { title, description, regularPrice, salePrice, specification, category, color, size, rating, reviews, stock, sold, brand} = req.body
+        
+        const regularPriceNum = parseFloat(regularPrice);
+        const salePriceNum = parseFloat(salePrice);
+
+        // Validate input values
+        if (isNaN(regularPriceNum) || isNaN(salePriceNum) || regularPriceNum <= 0 || salePriceNum <= 0 || salePriceNum > regularPriceNum) {
+            return res.status(400).json({ message: "Invalid pricing values" });
+        }
+
+        // Calculate the discount
+        let discount = 0;
+        if (salePriceNum < regularPriceNum) {
+            discount = ((regularPriceNum - salePriceNum) / regularPriceNum) * 100;
+        }
         const products = await Products.findByIdAndUpdate(id,{
-            name,description,price,specification,category,image
+            title, description, regularPrice, salePrice,price: salePrice, specification, category, color, size, rating, reviews, stock, sold, brand,discount
         },{new:true})
+
         console.log(products)
         return res.status(200).json(products)
     }catch(err){
