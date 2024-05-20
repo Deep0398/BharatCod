@@ -4,7 +4,7 @@ import { checkAdminLogin } from "../middleware/auth.middleware.js"
 import { deleteProductController } from "../controller/product.controller.js";
 import { deleteUserController } from "../controller/user.controller.js";
 import { addCategory,getCategories,deleteCategory,updateCategory } from "../controller/category.controller.js";
-import { getAllOrders } from "../controller/order.controller.js";
+import { getAllOrders,updateOrderStatusController } from "../controller/order.controller.js";
 const adminRouter = express.Router()
 
 adminRouter.post("/signup",signupController);
@@ -17,4 +17,5 @@ adminRouter.get('/getcategory',getCategories)
 adminRouter.delete('/deletecategory/:categoryId',deleteCategory)
 adminRouter.put('/updatecategory/:categoryId',updateCategory)
 adminRouter.get('/getallorders',getAllOrders)
+adminRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
 export default adminRouter

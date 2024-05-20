@@ -18,7 +18,7 @@ export async function placeOrder(req, res) {
             return res.status(400).json({message:"User Not Found"})
         }
     for(const item of items){
-        const { productId, quantity, orderAddress,title,salePrice,regularPrice,discount,category } = item;
+        const { productId, quantity,orderAddress,title,salePrice,regularPrice,discount,category } = item;
 
         const product = await Products.findById(productId);
         if (!product) {
@@ -28,7 +28,7 @@ export async function placeOrder(req, res) {
         if (product.stock < quantity) {
             return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
-        item.totalPrice = product.salePrice * quantity;
+        item.totalPrice = product.price * quantity;
       item.title = product.title
 
      if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
@@ -44,22 +44,30 @@ export async function placeOrder(req, res) {
         const orderItems = items.map(item =>{
             const { productId, quantity, totalPrice, orderAddress,title} = item;
             return {
-                title: item.title,
-            productId : item.productId,
-            quantity : item.quantity,
-            totalPrice : item.totalPrice,
-            orderAddress: item.orderAddress
+                title: title,
+            productId : productId,
+            quantity : quantity,
+            totalPrice : totalPrice,
+            orderAddress: orderAddress,
+           
             }
         })
 
         const order = new Order({
             userId: userId,
+            name : user.name,
             items: orderItems,
-            totalPrice: totalPrice
+            totalPrice: totalPrice,
+            status : "placed"
            
         });
 
         await order.save();
+
+        user.orders = user.orders || [];
+        user.orders.push(order._id);
+        await user.save();
+
         return res.status(200).json(order);
     } catch (error) {
         console.log(error);
@@ -85,6 +93,7 @@ export async function trackOrder(req,res){
         const orderDetails = orders.map(order =>({
             orderId:order._id,
             status:order.status,
+            name: order.name,
             totalPrice:order.totalPrice,
             items:order.items && order.items.map(item=>({
                 productId:item.productId._id,

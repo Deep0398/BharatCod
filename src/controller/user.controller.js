@@ -319,7 +319,7 @@ export async function forgotPasswordController(req, res) {
     const token = jwt.sign({userID: user._id},'greenwebsolutions',{expiresIn:'1h'});
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
+      host: 'smtp. .email',
       port: 587,
       secure: false,
       auth: {

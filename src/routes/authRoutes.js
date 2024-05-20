@@ -5,7 +5,7 @@ import {searchProductByName,insertProduct, searchProductByCategory,updateProduct
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
- import {placeOrder,trackOrder,cancelOrder,updateOrderStatusController} from "../controller/order.controller.js"
+ import {placeOrder,trackOrder,cancelOrder} from "../controller/order.controller.js"
 import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../controller/wishlist.controller.js";
  import upload from "../middleware/multer.js";
 
@@ -51,7 +51,7 @@ userRouter.post('/new-product',upload.fields([
  userRouter.post('/order/place',placeOrder)
  userRouter.get('/order/:userId/status',trackOrder)
  userRouter.put('/order/:orderId/cancel',cancelOrder)
- userRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
+
 
  //google sign in 
 

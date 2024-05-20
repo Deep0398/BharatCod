@@ -6,11 +6,11 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: false
     },
-    // shippingAddress: {
-    //     type: mongoose.Schema.Types.Mixed,
-    //     ref: 'Address', 
-    //     required: true
-    
+    name:{
+        type: String
+       
+    },
+   
     items:[{
         productId:{
             type: mongoose.Schema.Types.ObjectId,
@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema({
             },
             orderAddress:{
                 type: String
+            },
+            title:{
+                type: String
+
             }
     }
 ],
@@ -35,7 +39,7 @@ totalPrice:{
 },
 status:{
     type:String,
-    enum:['placed','shipped','delivered','canceled'],
+    enum:['placed','processing','delivered','canceled','shipped'],
     default:'placed'
 },
 regularPrice:{
