@@ -1,27 +1,27 @@
-import { userModel } from "../models/user.model.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import upload  from "../middleware/multer.js";
 import { generateUniqueReferenceId } from "../services/generateReferenceId.js";
+import { userModel } from "../models/user.model.js";
 import dotenv from "dotenv"
 dotenv.config()
 
 export async function signUpController(req,res){
-    try {
-        const { name,email, password } = req.body;
+  try {
+    const { name,email, password } = req.body;
     
-        //  Check if the email is already registered
-        const existingUser = await userModel.findOne({ email });
-        if (existingUser) {
-          return res.status(409).send({message:'Email already registered'});
-        }
-
-        //  Hash password during registration
-
-        const hashedPassword = await bcrypt.hash(password, 10);  
-
+    //  Check if the email is already registered
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.status(409).send({message:'Email already registered'});
+    }
+    
+    //  Hash password during registration
+    
+    const hashedPassword = await bcrypt.hash(password, 10);  
+    
     const newUser = new userModel({ name,email, password: hashedPassword });
     await newUser.save();
     
@@ -32,12 +32,13 @@ export async function signUpController(req,res){
       }
 
     }
-
+    
 // Get method for finding existing user
 
 export async function getUserController(req, res) {
   try {
-    const user = await userModel.find({});
+    const userId = req.params.userId;
+    const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -401,5 +402,19 @@ export async function resetPasswordController(req, res) {
   } catch (error) {
     console.error('Error in resetPasswordController:', error);
     res.status(500).send('Internal server error');
+  }
+}
+
+export async function getAllUsers(req, res) {
+  try {
+    
+    const user = await userModel.find();
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    return res.status(200).send(user);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err.message);
   }
 }

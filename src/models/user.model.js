@@ -31,55 +31,135 @@
             type:String
         }
     })
-        const userSchema = new mongoose.Schema({
 
-        name:{
+    const orderItemSchema = new mongoose.Schema({
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        },
+        totalPrice: {
+            type: Number
+        },
+        orderAddress: {
+            type: String
+        },
+        title: {
+            type: String
+        }
+    });
+    
+    const embeddedOrderSchema = new mongoose.Schema({
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: false
+        },
+        name: {
+            type: String
+        },
+        items: [orderItemSchema],
+        totalPrice: {
+            type: Number
+        },
+        status: {
+            type: String,
+            enum: ['placed', 'processing', 'delivered', 'canceled', 'shipped'],
+            default: 'placed'
+        }
+    }, { timestamps: true });
+    
+    const userSchema = new mongoose.Schema({
+        name: {
             type: String,
             required: false
         },
+        email: {
+            type: String,
+            required: false
+        },
+        password: {
+            type: String,
+            required: false
+        },
+        referenceId: {
+            type: String
+        },
+        phoneNo: {
+            type: Number
+        },
+        role: {
+            type: String,
+            enum: ['admin', 'vendor', 'user'],
+            default: 'user',
+            required: false
+        },
+        image: {
+            type: String,
+            required: false
+        },
+        addresses: [addressSchema],
+        orders: [embeddedOrderSchema], // Embed full order schema
+        loginMethods: {
+            type: [String],
+            enum: ['PhoneNo', 'Gmail', 'FaceBook']
+        }
+    }, { timestamps: true });
     
-        email:{
-            type:String,
-            required:false,
+    export const userModel = mongoose.model('users', userSchema)
+//         const userSchema = new mongoose.Schema({
+
+//         name:{
+//             type: String,
+//             required: false
+//         },
+    
+//         email:{
+//             type:String,
+//             required:false,
             
-        },
-        password:{
-            type:String,
-            required:false
+//         },
+//         password:{
+//             type:String,
+//             required:false
             
-        },
-    referenceId:{
-        type: String
+//         },
+//     referenceId:{
+//         type: String
         
-    },
-    phoneNo:{
-        type: Number
-    },
+//     },
+//     phoneNo:{
+//         type: Number
+//     },
 
-        role:{
-        type:String,
-        enum:['admin','vendor','user'],
-        default:'user',
-        required:false
-        },
-        image:{
-            type:String,
-            required:false
-    },
-    addresses:[addressSchema],
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order'
-    }],
-    loginMethods: [{ 
-        type: String, 
-        enum: ['PhoneNo','Gmail','FaceBook']
+//         role:{
+//         type:String,
+//         enum:['admin','vendor','user'],
+//         default:'user',
+//         required:false
+//         },
+//         image:{
+//             type:String,
+//             required:false
+//     },
+//     addresses:[addressSchema],
+//     orders: [{
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'Order'
+//     }],
+//     loginMethods: [{ 
+//         type: String, 
+//         enum: ['PhoneNo','Gmail','FaceBook']
         
-    }]
-},
-     {timestamps:true} 
+//     }]
+// },
+//      {timestamps:true} 
 
-    )
+//     )
 
 
-    export const userModel =  mongoose.model('users',userSchema);
+//     export const userModel =  mongoose.model('users',userSchema);

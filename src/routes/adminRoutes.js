@@ -2,7 +2,7 @@ import express from "express"
 import { signupController,loginController,changeUserRoleController} from "../controller/admin.controller.js";
 import { checkAdminLogin } from "../middleware/auth.middleware.js"
 import { deleteProductController } from "../controller/product.controller.js";
-import { deleteUserController } from "../controller/user.controller.js";
+import { deleteUserController,getAllUsers } from "../controller/user.controller.js";
 import { addCategory,getCategories,deleteCategory,updateCategory } from "../controller/category.controller.js";
 import { getAllOrders,updateOrderStatusController } from "../controller/order.controller.js";
 const adminRouter = express.Router()
@@ -18,4 +18,5 @@ adminRouter.delete('/deletecategory/:categoryId',deleteCategory)
 adminRouter.put('/updatecategory/:categoryId',updateCategory)
 adminRouter.get('/getallorders',getAllOrders)
 adminRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
+adminRouter.get('/getAllUsers',getAllUsers)
 export default adminRouter

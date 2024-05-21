@@ -28,7 +28,12 @@ export async function placeOrder(req, res) {
         if (product.stock < quantity) {
             return res.status(400).json({ message: "Requested Quantity Not Available" });
         }
-        item.totalPrice = product.price * quantity;
+        console.log("Product Price:", product.price);
+console.log("Quantity:", quantity);
+
+let price = product.salePrice;
+console.log(price)
+        item.totalPrice = product.salePrice * quantity;
       item.title = product.title
 
      if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
@@ -58,14 +63,21 @@ export async function placeOrder(req, res) {
             name : user.name,
             items: orderItems,
             totalPrice: totalPrice,
-            status : "placed"
+            status: "placed",
+            createdAt: new Date(),
+            updatedAt: new Date()
            
         });
 
+
+        console.log("Order",order)
         await order.save();
 
         user.orders = user.orders || [];
-        user.orders.push(order._id);
+        user.orders.push(order)
+
+        console.log(user)
+
         await user.save();
 
         return res.status(200).json(order);

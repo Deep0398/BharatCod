@@ -9,14 +9,10 @@ import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "..
 import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../controller/wishlist.controller.js";
  import upload from "../middleware/multer.js";
 
-
-
 const userRouter = express.Router();
 
-// Signup and log in
-
 userRouter.post('/signup',signUpController);
-userRouter.get('/get',getUserController);
+userRouter.get('/get/:userId',getUserController);
 userRouter.post('/login',loginController);
 userRouter.post('/logout',logoutController)
 userRouter.post('/googleLogin',googleLoginController)
@@ -29,10 +25,8 @@ userRouter.get('/getAddress/:userId',getUserAddressController)
 userRouter.delete('/:userId/address/:addressId',deleteAddressController)
 // userRouter.put('/address/:userId',userAddressController)
 
-// Forgot password
-
  userRouter.post('/forgot-password',forgotPasswordController);
- userRouter.post('/reset-password',resetPasswordController)
+ userRouter.post('/reset-password',resetPasswordController);
 
 //  get product by name
 userRouter.post('/new-product',upload.fields([
@@ -48,7 +42,6 @@ userRouter.post('/new-product',upload.fields([
  
 
  //order routes
-
  userRouter.post('/order/place',placeOrder)
  userRouter.get('/order/:userId/status',trackOrder)
  userRouter.put('/order/:orderId/cancel',cancelOrder)
