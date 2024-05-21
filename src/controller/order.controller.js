@@ -75,40 +75,49 @@ export async function placeOrder(req, res) {
     }
 }
 
-
-export async function trackOrder(req,res){
+export async function trackOrder(req, res) {
     try {
-        const userId = req.params.userId.toString()
+        const userId = req.params.userId.toString();
         const orders = await Order.find({ userId: userId }).populate({
             path: 'items.productId',
             model: Products,
             select: 'title price'
-        })
+        });
 
-        console.log(orders)
-        if(!orders){
-            return res.status(404).json({message:"Order Not Found"})
+        console.log(orders);
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: "Order Not Found" });
         }
 
-        const orderDetails = orders.map(order =>({
-            orderId:order._id,
-            status:order.status,
-            name: order.name,
-            totalPrice:order.totalPrice,
-            items:order.items && order.items.map(item=>({
-                productId:item.productId._id,
-                title:item.productId.title,
-                price:item.productId.salePrice,
-                quantity:item.quantity,
-                orderAddress:item.orderAddress,
-                totalPrice:item.totalPrice
-            })),
-            createdAt: order.createdAt
-        }))
-        return res.status(200).json(orderDetails)
-    }catch(error){
-        console.log(error)
-        return res.status(500).json({message:"Internal Server Error"})
+        const orderDetails = orders.map(order => {
+            const items = order.items.map(item => {
+                if (!item.productId) {
+                    return null; // Handle null productId
+                }
+                return {
+                    productId: item.productId._id || null, // Ensure productId is not null
+                    title: item.productId.title || "", // Ensure title is not null
+                    price: item.productId.salePrice || 0, // Ensure salePrice is not null
+                    quantity: item.quantity || 0,
+                    orderAddress: item.orderAddress || "",
+                    totalPrice: item.totalPrice || 0
+                };
+            }).filter(item => item !== null); // Filter out null items
+
+            return {
+                orderId: order._id,
+                status: order.status,
+                name: order.name || "", // Ensure name is not null
+                totalPrice: order.totalPrice || 0, // Ensure totalPrice is not null
+                items: items,
+                createdAt: order.createdAt
+            };
+        });
+
+        return res.status(200).json(orderDetails);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
