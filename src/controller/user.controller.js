@@ -112,7 +112,7 @@ export async function googleLoginController(req,res){
     if (!userData) {
       return res.status(400).json({ message: "Invalid request" });
     }
-    const {email,name} = userData
+    const {email,name,loginMethods} = userData
 const referenceId = generateUniqueReferenceId()
 
     let existingUser = await userModel.findOne({email: email})
@@ -122,7 +122,7 @@ const referenceId = generateUniqueReferenceId()
       return res.status(200).json({ message: "User logged in successfully", user: existingUser, token: token });
     } else {
       
-      existingUser = new userModel({ name, email,referenceId,loginMethods:['']});
+      existingUser = new userModel({ name, email,referenceId,loginMethods});
     
       existingUser = await existingUser.save();
       const token = jwt.sign({ userID: existingUser._id }, 'greenwebsolutions');
@@ -141,11 +141,11 @@ export async function phoneLoginController(req,res){
     if(!userData || !userData.phoneNo){
       return res.status(400).json({ message: "Phone number Not exist" });
     }
-    const {phoneNo} = userData
+    const {phoneNo,loginMethods} = userData
     const referenceId = generateUniqueReferenceId()
     let exisitingUser = await userModel.findOne({phoneNo})
     if(!exisitingUser){
-      const newUser = new userModel({phoneNo,referenceId,loginMethods:['']})
+      const newUser = new userModel({phoneNo,referenceId,loginMethods})
       exisitingUser = await newUser.save()
   }
   const token = jwt.sign({userID: exisitingUser._id},'greenwebsolutions');
@@ -318,7 +318,7 @@ export async function forgotPasswordController(req, res) {
     }
     
      
-    const token = jwt.sign({userID: user._id},process.env.ACCESS_SECRET_KEY,{expiresIn:'1h'});
+    const token = jwt.sign({userID: user._id},process.env.ACCESS_SECRET_KEY,{expiresIn:'3h'});
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -366,6 +366,8 @@ export async function resetPasswordController(req, res) {
   try {
     const { token, newPassword } = req.body;
 
+    console.log(req.body)
+
     if (!token || !newPassword) {
       return res.status(400).send('Token and new password are required');
     }
@@ -374,7 +376,9 @@ export async function resetPasswordController(req, res) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
+      console.log('Decoded Token:', decoded)
     } catch (err) {
+      console.error('Token verification failed:', err);
       return res.status(400).send('Invalid or expired token');
     }
 

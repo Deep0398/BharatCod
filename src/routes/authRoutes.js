@@ -32,7 +32,7 @@ userRouter.delete('/:userId/address/:addressId',deleteAddressController)
 // Forgot password
 
  userRouter.post('/forgot-password',forgotPasswordController);
- userRouter.put('/reset-password',resetPasswordController)
+ userRouter.post('/reset-password',resetPasswordController)
 
 //  get product by name
 userRouter.post('/new-product',upload.fields([

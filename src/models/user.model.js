@@ -73,7 +73,8 @@
     }],
     loginMethods: [{ 
         type: String, 
-        default: [] 
+        enum: ['PhoneNo','Gmail','FaceBook']
+        
     }]
 },
      {timestamps:true} 
