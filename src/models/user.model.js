@@ -66,9 +66,17 @@
             type:String,
             required:false
     },
-    addresses:[addressSchema]
-    
-    }, {timestamps:true} 
+    addresses:[addressSchema],
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order'
+    }],
+    loginMethods: [{ 
+        type: String, 
+        default: [] 
+    }]
+},
+     {timestamps:true} 
 
     )
 

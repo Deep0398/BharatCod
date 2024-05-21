@@ -1,6 +1,6 @@
 import express from "express"
 // import passport from "passport";
-import { getUserController, loginController, signUpController ,forgotPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController,logoutController} from "../controller/user.controller.js";
+import { getUserController, loginController, signUpController ,forgotPasswordController,resetPasswordController,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController,logoutController} from "../controller/user.controller.js";
 import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts,getTopSaleProducts} from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
@@ -32,6 +32,7 @@ userRouter.delete('/:userId/address/:addressId',deleteAddressController)
 // Forgot password
 
  userRouter.post('/forgot-password',forgotPasswordController);
+ userRouter.put('/reset-password',resetPasswordController)
 
 //  get product by name
 userRouter.post('/new-product',upload.fields([

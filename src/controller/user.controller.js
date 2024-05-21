@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import upload  from "../middleware/multer.js";
 import { generateUniqueReferenceId } from "../services/generateReferenceId.js";
+import dotenv from "dotenv"
+dotenv.config()
 
 export async function signUpController(req,res){
     try {
@@ -120,7 +122,7 @@ const referenceId = generateUniqueReferenceId()
       return res.status(200).json({ message: "User logged in successfully", user: existingUser, token: token });
     } else {
       
-      existingUser = new userModel({ name, email,referenceId});
+      existingUser = new userModel({ name, email,referenceId,loginMethods:['']});
     
       existingUser = await existingUser.save();
       const token = jwt.sign({ userID: existingUser._id }, 'greenwebsolutions');
@@ -143,7 +145,7 @@ export async function phoneLoginController(req,res){
     const referenceId = generateUniqueReferenceId()
     let exisitingUser = await userModel.findOne({phoneNo})
     if(!exisitingUser){
-      const newUser = new userModel({phoneNo,referenceId})
+      const newUser = new userModel({phoneNo,referenceId,loginMethods:['']})
       exisitingUser = await newUser.save()
   }
   const token = jwt.sign({userID: exisitingUser._id},'greenwebsolutions');
@@ -316,22 +318,22 @@ export async function forgotPasswordController(req, res) {
     }
     
      
-    const token = jwt.sign({userID: user._id},'greenwebsolutions',{expiresIn:'1h'});
+    const token = jwt.sign({userID: user._id},process.env.ACCESS_SECRET_KEY,{expiresIn:'1h'});
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp. .email',
-      port: 587,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
       secure: false,
       auth: {
-        user: '	bharatcod@greenwebsoftwaredevelopment.com',
-        pass: 'Bharatcod@123'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       }
     });
 
     
     const mailOptions = {
-      from : 'bharatcod@greenwebsoftwaredevelopment.com',
-       to : 'gwstelekuldeep@gmail.com',
+      from : process.env.SMTP_USER,
+       to : email,
       subject : 'Reset Password',
       text : 'You are receiving this because you have requested to reset password of your account with Bharatlod.\n\n' +
       'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -357,5 +359,43 @@ transporter.sendMail(mailOptions, (error, info) => {
   }catch (error) {
     console.error(error);
     return res.status(500).send(error.message);
+  }
+}
+
+export async function resetPasswordController(req, res) {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).send('Token and new password are required');
+    }
+
+    // Verify the token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
+    } catch (err) {
+      return res.status(400).send('Invalid or expired token');
+    }
+
+    // Find the user by the ID from the token
+    const user = await userModel.findById(decoded.userID);
+    if (!user || user.resetPasswordToken !== token || user.resetPasswordExpiresIn < Date.now()) {
+      return res.status(400).send('Invalid or expired token');
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password and clear the reset token and expiry
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresIn = undefined;
+    await user.save();
+
+    res.status(200).send('Password has been reset successfully');
+  } catch (error) {
+    console.error('Error in resetPasswordController:', error);
+    res.status(500).send('Internal server error');
   }
 }
