@@ -1,7 +1,9 @@
     import { Products } from "../models/product.model.js";
+    import { userModel } from "../models/user.model.js";
     import upload from "../middleware/multer.js";
     import urlJoin from "url-join";
     import CategoryModel from "../models/category.model.js";
+    import { addToRecentlyViewed } from "../middleware/recentView.js";
     
  
     // insert a new product
@@ -170,7 +172,7 @@ export  async function searchProductByName(req,res){
         if (query.toLowerCase() === "men's clothing" || query.toLowerCase() === "women's clothing") {
             products = await Products.find({ title: query });
         } else {
-        const products = await Products.find({
+         products = await Products.find({
             title: {
                 $regex: new RegExp(query, 'i')
             }
@@ -304,3 +306,79 @@ export async function getTopSaleProducts(req,res){
         return res.status(500).json({message:"Internal server error"})
     }
 }
+export async function viewProduct(req, res) {
+    try {
+        const productId = req.params.productId;
+        
+        console.log(`Received Product ID: ${productId}`); // Log the received product ID
+        
+        // Validate the product ID format if using MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: 'Invalid Product ID format' });
+          }
+
+        const product = await Products.findById(productId);
+        if (!product) {
+            console.log(`Product not found for ID: ${productId}`); // Log if product not found
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        console.log(`Product found: ${product}`); // Log the found product
+        return res.status(200).json(product);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const getRecentlyViewedProducts = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        let userWithRecentlyViewed = await userModel.findById(user._id).populate('recentlyViewed').select('recentlyViewed');
+
+        if (!userWithRecentlyViewed || !userWithRecentlyViewed.recentlyViewed) {
+            return res.status(404).json({ message: 'No recently viewed products found' });
+        }
+
+        const recentlyViewedProducts = userWithRecentlyViewed.recentlyViewed;
+        
+        const productsWithImages = recentlyViewedProducts.map(product => {
+            const images = [
+                product.productimage1 ? urlJoin(process.env.BASE_URL, product.productimage1.replace(/\\/g, '/')) : null,
+                product.productimage2 ? urlJoin(process.env.BASE_URL, product.productimage2.replace(/\\/g, '/')) : null,
+                product.productimage3 ? urlJoin(process.env.BASE_URL, product.productimage3.replace(/\\/g, '/')) : null
+            ].filter(image => image !== null);
+
+            return {
+                _id: product._id,
+                title: product.title,
+                description: product.description,
+                price: product.salePrice,
+                regularPrice: product.regularPrice,
+                salePrice: product.salePrice,
+                specification: product.specification,
+                category: product.category,
+                color: product.color,
+                size: product.size,
+                reviews: product.reviews,
+                rating: product.rating,
+                stock: product.stock,
+                sold: product.sold,
+                brand: product.brand,
+                images: images,
+                discount: product.discount
+            };
+        });
+
+        console.log(productsWithImages);
+        return res.status(200).json(productsWithImages);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};

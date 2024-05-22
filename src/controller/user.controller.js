@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer';
 import upload  from "../middleware/multer.js";
 import { generateUniqueReferenceId } from "../services/generateReferenceId.js";
 import { userModel } from "../models/user.model.js";
+import { Products } from "../models/product.model.js";
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -418,3 +419,4 @@ export async function getAllUsers(req, res) {
     return res.status(500).send(err.message);
   }
 }
+

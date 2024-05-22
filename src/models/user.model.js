@@ -102,64 +102,19 @@
             type: String,
             required: false
         },
+        
         addresses: [addressSchema],
         orders: [embeddedOrderSchema], // Embed full order schema
         loginMethods: {
             type: [String],
             enum: ['PhoneNo', 'Gmail', 'FaceBook']
-        }
+        },
+    
+    recentlyViewed: [{
+         type: mongoose.Schema.Types.ObjectId,
+          ref: 'Products' }
+        ]
+
     }, { timestamps: true });
     
     export const userModel = mongoose.model('users', userSchema)
-//         const userSchema = new mongoose.Schema({
-
-//         name:{
-//             type: String,
-//             required: false
-//         },
-    
-//         email:{
-//             type:String,
-//             required:false,
-            
-//         },
-//         password:{
-//             type:String,
-//             required:false
-            
-//         },
-//     referenceId:{
-//         type: String
-        
-//     },
-//     phoneNo:{
-//         type: Number
-//     },
-
-//         role:{
-//         type:String,
-//         enum:['admin','vendor','user'],
-//         default:'user',
-//         required:false
-//         },
-//         image:{
-//             type:String,
-//             required:false
-//     },
-//     addresses:[addressSchema],
-//     orders: [{
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'Order'
-//     }],
-//     loginMethods: [{ 
-//         type: String, 
-//         enum: ['PhoneNo','Gmail','FaceBook']
-        
-//     }]
-// },
-//      {timestamps:true} 
-
-//     )
-
-
-//     export const userModel =  mongoose.model('users',userSchema);
