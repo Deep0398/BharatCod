@@ -2,6 +2,8 @@ import adminModel from "../models/admin.model.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { userModel } from "../models/user.model.js";
+import Order from "../models/order.model.js";
+
 
 
 const ACCESS_SECRET_KEY = process.env.ACCESS_SECRET_KEY || "greenwebsolutions";
@@ -72,3 +74,35 @@ export async function changeUserRoleController(req,res){
     }
 }
  
+export async function getStaticsController(req,res){
+    try {
+        const userCount = await userModel.countDocuments()
+
+        const totalSalesResult = await Order.aggregate([
+            {$match :{status : 'delivered'}},
+            {$group :{_id: null, totalAmount:{$sum :'$totalPrice'} }}
+        ])
+        const totalSales = totalSalesResult[0] ? totalSalesResult[0].totalAmount : 0;
+
+        const orderCount = await Order.countDocuments();
+        const orderStatusCounts = await Order.aggregate([
+            { $group: { _id: '$status', count: { $sum: 1 } } }
+        ]);
+
+        const statistics = {
+            userCount,
+            totalSales,
+            orderCount,
+            orderStatusCounts: orderStatusCounts.reduce((acc, curr) => {
+                acc[curr._id] = curr.count;
+                return acc;
+            }, {})
+        };
+
+        return res.status(200).json(statistics);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+    

@@ -1,5 +1,5 @@
 import express from "express"
-import { signupController,loginController,changeUserRoleController} from "../controller/admin.controller.js";
+import { signupController,loginController,changeUserRoleController,getStaticsController} from "../controller/admin.controller.js";
 import { checkAdminLogin } from "../middleware/auth.middleware.js"
 import { deleteProductController } from "../controller/product.controller.js";
 import { deleteUserController,getAllUsers } from "../controller/user.controller.js";
@@ -19,4 +19,5 @@ adminRouter.put('/updatecategory/:categoryId',updateCategory)
 adminRouter.get('/getallorders',getAllOrders)
 adminRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
 adminRouter.get('/getAllUsers',getAllUsers)
+adminRouter.get('/statistics', getStaticsController);
 export default adminRouter
