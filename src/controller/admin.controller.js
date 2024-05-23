@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { userModel } from "../models/user.model.js";
 import Order from "../models/order.model.js";
 import Promotion from "../models/promotinaloffer.model.js";
+import moment from "moment-timezone"
 
 
 
@@ -111,12 +112,15 @@ export async function createPromotion(req,res){
     try {
         const {title,description,discount,startDate,endDate,imageUrl} = req.body
 
+        const formattedStartDate = moment(startDate, 'DD-MM-YYYY').utc().toDate();
+        const formattedEndDate = moment(endDate, 'DD-MM-YYYY').utc().toDate();
+
         const newPromotion = new Promotion({
             title,
             description,
             discount,
-            startDate,
-            endDate,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
             imageUrl
         })
         const savedPromotion = await newPromotion.save()
@@ -126,3 +130,45 @@ export async function createPromotion(req,res){
         return res.status(500).send({message:"Internal Server Error"})
     }
 }
+
+export async function editPromotion (req, res)  {
+    try {
+        const { promotionId } = req.params;
+        const { title, description, discount,startDate,endDate, imageUrl } = req.body;
+
+        const formattedStartDate = moment(startDate, 'DD-MM-YYYY').utc().toDate();
+        const formattedEndDate = moment(endDate, 'DD-MM-YYYY').utc().toDate();
+
+        const updatedPromotion = await Promotion.findByIdAndUpdate(
+            promotionId,
+            { title, description, discount, startDate:formattedStartDate, endDate:formattedEndDate, imageUrl, updatedAt: Date.now() },
+            { new: true }
+        );
+
+        if (!updatedPromotion) {
+            return res.status(404).json({ message: 'Promotion not found' });
+        }
+
+        return res.status(200).json(updatedPromotion);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export async function deletePromotion (req, res) {
+    try {
+        const { promotionId } = req.params;
+
+        const deletedPromotion = await Promotion.findByIdAndDelete(promotionId);
+
+        if (!deletedPromotion) {
+            return res.status(404).json({ message: 'Promotion not found' });
+        }
+
+        return res.status(200).json({ message: 'Promotion deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
