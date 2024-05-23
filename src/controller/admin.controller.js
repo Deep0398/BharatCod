@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { userModel } from "../models/user.model.js";
 import Order from "../models/order.model.js";
+import Promotion from "../models/promotinaloffer.model.js";
 
 
 
@@ -106,3 +107,22 @@ export async function getStaticsController(req,res){
     }
 };
     
+export async function createPromotion(req,res){
+    try {
+        const {title,description,discount,startDate,endDate,imageUrl} = req.body
+
+        const newPromotion = new Promotion({
+            title,
+            description,
+            discount,
+            startDate,
+            endDate,
+            imageUrl
+        })
+        const savedPromotion = await newPromotion.save()
+        return res.status(200).json({message:"Offer Created Successfully",savedPromotion})
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({message:"Internal Server Error"})
+    }
+}
