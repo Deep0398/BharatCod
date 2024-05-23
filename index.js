@@ -30,8 +30,7 @@ connectDB();
 
 
 app.use(cors({
-    origin: 'https://bharatcod.com/',
-    optionsSuccessStatus: 200
+    origin: '*'
   }));
 app.use(express.json());
 

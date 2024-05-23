@@ -1,6 +1,6 @@
 import express from "express"
 // import passport from "passport";
-import { getUserController, loginController, signUpController ,forgotPasswordController,resetPasswordController ,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController,logoutController} from "../controller/user.controller.js";
+import { getUserController, loginController, signUpController ,forgotPasswordController,getOffers,resetPasswordController ,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController,logoutController} from "../controller/user.controller.js";
 import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts,getTopSaleProducts,viewProduct,getRecentlyViewedProducts } from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
@@ -75,6 +75,8 @@ userRouter.post ('/cart/checkout',authenticateUser,checkout)
 userRouter.post('/shipping/add',addShippingAdress);
  userRouter.put('/shipping/update/:_id',updateShippingAddress)
  userRouter.delete('/shipping/delete/:_id',deleteShippingAddress)
+
+ userRouter.get('/promotionalOffers',getOffers)
 
 
 

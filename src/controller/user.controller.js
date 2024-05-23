@@ -7,6 +7,7 @@ import { generateUniqueReferenceId } from "../services/generateReferenceId.js";
 import { userModel } from "../models/user.model.js";
 import { Products } from "../models/product.model.js";
 import dotenv from "dotenv"
+import Promotion from "../models/promotinaloffer.model.js";
 dotenv.config()
 
 export async function signUpController(req,res){
@@ -420,3 +421,13 @@ export async function getAllUsers(req, res) {
   }
 }
 
+export async function getOffers(req,res){
+  try {
+    const promotions = await Promotion.find()
+
+    return res.status(200).json(promotions)
+  }catch(err){
+    console.log(err)
+    return res.status(400).send({message:"Internal server error"})
+  }
+}
