@@ -1,7 +1,7 @@
 import express from "express"
 // import passport from "passport";
 import { getUserController, loginController, signUpController ,forgotPasswordController,getOffers,resetPasswordController ,searchUserController,editUserController,uploadImageController,addAddressContoller,getUserAddressController,googleLoginController,phoneLoginController,deleteAddressController,logoutController} from "../controller/user.controller.js";
-import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts,getTopSaleProducts,viewProduct,getRecentlyViewedProducts } from "../controller/product.controller.js";
+import {searchProductByName,insertProduct, searchProductByCategory,updateProduct,getProducts,getTopSaleProducts,viewProduct,getRecentlyViewedProducts,sortProductsByPrice } from "../controller/product.controller.js";
 import { addToCart,viewCart,updateCartItem,checkout } from "../controller/cart.controller.js";
 import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "../controller/shipping.controller.js";
  import {authenticateUser} from "../middleware/auth.middleware.js"
@@ -42,7 +42,7 @@ userRouter.post('/new-product',upload.fields([
  userRouter.get('/getTopSaleProducts',getTopSaleProducts)
  userRouter.get('/view/:productId',authenticateUser,addToRecentlyViewed,viewProduct)
  userRouter.get('/getRecentViewProduct',authenticateUser,getRecentlyViewedProducts)
- 
+ userRouter.get('/sortByPrice',sortProductsByPrice)
 
  //order routes
  userRouter.post('/order/place',placeOrder)
