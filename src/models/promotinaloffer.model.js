@@ -21,10 +21,11 @@ const promotionSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    imageUrl: {
+
+    images: [{
         type: String,
-        required: false,
-    },
+    }],
+    
     createdAt: {
         type: Date,
         default: Date.now,

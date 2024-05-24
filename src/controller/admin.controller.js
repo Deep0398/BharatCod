@@ -5,6 +5,10 @@ import { userModel } from "../models/user.model.js";
 import Order from "../models/order.model.js";
 import Promotion from "../models/promotinaloffer.model.js";
 import moment from "moment-timezone"
+import dotenv from "dotenv"
+
+dotenv.config()
+const BASE_URL = process.env.BASE_URL;
 
 
 
@@ -107,10 +111,22 @@ export async function getStaticsController(req,res){
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-    
-export async function createPromotion(req,res){
+
+export async function createPromotion(req, res) {
     try {
-        const {title,description,discount,startDate,endDate,imageUrl} = req.body
+        const { title, description, discount, startDate, endDate } = req.body;
+        console.log(req.body);
+
+        const imageFiles = req.files;
+        if (!imageFiles || imageFiles.length === 0) {
+            return res.status(400).json({ message: 'Images are required' });
+        }
+
+        console.log(req.files);
+        console.log(imageFiles);
+
+        const imagePaths = imageFiles.map(file => file.path.replace(/\\/g, '/'));
+        console.log(imagePaths);
 
         const formattedStartDate = moment(startDate, 'DD-MM-YYYY').utc().toDate();
         const formattedEndDate = moment(endDate, 'DD-MM-YYYY').utc().toDate();
@@ -121,15 +137,52 @@ export async function createPromotion(req,res){
             discount,
             startDate: formattedStartDate,
             endDate: formattedEndDate,
-            imageUrl
-        })
-        const savedPromotion = await newPromotion.save()
-        return res.status(200).json({message:"Offer Created Successfully",savedPromotion})
-    }catch(error){
-        console.log(error)
-        return res.status(500).send({message:"Internal Server Error"})
+            images: imagePaths
+        });
+        const savedPromotion = await newPromotion.save();
+        return res.status(200).json({ message: "Offer Created Successfully", savedPromotion });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: "Internal Server Error" });
     }
 }
+    
+// export async function createPromotion(req,res){
+//     try {
+//         const {title,description,discount,startDate,endDate,} = req.body
+//         console.log(req.body)
+
+//         const imageFiles = req.files;
+//         if (!imageFiles || !Array.isArray(imageFiles) || imageFiles.length === 0) {
+//             return res.status(400).json({ message: 'Images are required' });
+//         }
+        
+//         console.log(req.files)
+//         console.log(imageFiles)
+
+//         const imagePaths = imageFiles.map(file => file.path);;
+
+
+//         console.log(imagePaths)
+
+//         const formattedStartDate = moment(startDate, 'DD-MM-YYYY').utc().toDate();
+//         const formattedEndDate = moment(endDate, 'DD-MM-YYYY').utc().toDate();
+
+//         const newPromotion = new Promotion({
+//             title,
+//             description,
+//             discount,
+//             startDate: formattedStartDate,
+//             endDate: formattedEndDate,
+//             images:imagePaths
+//         })
+//         const savedPromotion = await newPromotion.save()
+//         return res.status(200).json({message:"Offer Created Successfully",savedPromotion})
+//     }catch(error){
+//         console.log(error)
+//         return res.status(500).send({message:"Internal Server Error"})
+//     }
+// }
 
 export async function editPromotion (req, res)  {
     try {

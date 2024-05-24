@@ -8,6 +8,7 @@ import { userModel } from "../models/user.model.js";
 import { Products } from "../models/product.model.js";
 import dotenv from "dotenv"
 import Promotion from "../models/promotinaloffer.model.js";
+import urlJoin from "url-join";
 dotenv.config()
 
 export async function signUpController(req,res){
@@ -421,13 +422,27 @@ export async function getAllUsers(req, res) {
   }
 }
 
-export async function getOffers(req,res){
+export async function getOffers(req, res) {
   try {
-    const promotions = await Promotion.find()
+      const promotions = await Promotion.find();
+      const promotionsWithImages = promotions.map(promotion => {
+          console.log(promotion);
+          const images = (promotion.images || []).map(image => urlJoin(process.env.BASE_URL, image.replace(/\\/g, '/')));
+          return {
+              _id: promotion._id,
+              title: promotion.title,
+              description: promotion.description,
+              discount: promotion.discount,
+              startDate: promotion.startDate,
+              endDate: promotion.endDate,
+              images: images
+          };
+      });
 
-    return res.status(200).json(promotions)
-  }catch(err){
-    console.log(err)
-    return res.status(400).send({message:"Internal server error"})
+      return res.status(200).json(promotionsWithImages);
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
   }
 }
+ 

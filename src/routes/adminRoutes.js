@@ -5,6 +5,7 @@ import { deleteProductController } from "../controller/product.controller.js";
 import { deleteUserController,getAllUsers } from "../controller/user.controller.js";
 import { addCategory,getCategories,deleteCategory,updateCategory } from "../controller/category.controller.js";
 import { getAllOrders,updateOrderStatusController } from "../controller/order.controller.js";
+import upload from "../middleware/multer.js";
 const adminRouter = express.Router()
 
 adminRouter.post("/signup",signupController);
@@ -20,7 +21,7 @@ adminRouter.get('/getallorders',getAllOrders)
 adminRouter.put('/order/:orderId/updateStatus',updateOrderStatusController)
 adminRouter.get('/getAllUsers',getAllUsers)
 adminRouter.get('/statistics', getStaticsController);
-adminRouter.post('/createOffers',createPromotion)
+adminRouter.post('/createOffers',upload.array('images',1 ),createPromotion)
 adminRouter.put('/editOffers/:promotionId',editPromotion)
 adminRouter.delete('/deleteOffers/:promotionId',deletePromotion)
 export default adminRouter
