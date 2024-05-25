@@ -39,8 +39,11 @@ console.log(price)
      if(isNaN(item.totalPrice) || !isFinite(item.totalPrice)){
         return res.status(400).json({message:'Invalid total price for item'})
      }
+    
+    product.stock -= quantity
+    product.sold += quantity
+    await product.save()
     }
-
          const totalPrice = items.reduce((total, item) => total + item.totalPrice, 0);
          if(isNaN(totalPrice) || !isFinite(totalPrice)){
             return res.status(400).json({message:'Invalid total price for Order'})

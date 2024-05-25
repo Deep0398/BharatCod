@@ -11,7 +11,7 @@
     export async function insertProduct(req, res) {
         try {
             console.log('Kuldeep');
-            const { title, description,regularPrice, salePrice,specification, category,color,size,rating,reviews,stock,sold,brand } = req.body;
+            const { title, description,regularPrice, salePrice,specification, category,subcategory,color,size,rating,reviews,stock,sold,brand } = req.body;
 
             console.log(req.body)
 
@@ -35,6 +35,13 @@
             if (!categories) {
                 return res.status(400).json({ message: "Invalid category" });
             }
+            let subcategories = null;
+            if (subcategories) {
+                subcategories = await CategoryModel.findOne({ name: subcategories, parent: categoryDoc._id });
+                if (!subcategories) {
+                    return res.status(400).json({ message: "Invalid subcategory" });
+                }
+            }
             let discount = 0;
             if (salePrice < regularPrice) {
                 discount = ((regularPrice - salePrice) / regularPrice) * 100;
@@ -49,6 +56,7 @@
                 discount,
                 specification,
                 category: category,
+                subcategory: subcategory,
                 color,
                 size,
                 reviews,

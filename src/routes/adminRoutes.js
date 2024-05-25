@@ -15,7 +15,7 @@ adminRouter.put('/changeUserRole/:userId',checkAdminLogin,changeUserRoleControll
 adminRouter.delete('/deleteProducts/:productId',deleteProductController)
 adminRouter.delete('/deleteUser',checkAdminLogin,deleteUserController)
 adminRouter.post('/addcategory',upload.array('images',1 ),addCategory)
-adminRouter.post('/addSubcategory',upload.array('images',1 ),addSubcategory)
+adminRouter.post('/addSubcategory',addSubcategory)
 adminRouter.get('/getcategory',getCategories)
 adminRouter.delete('/deletecategory/:categoryId',deleteCategory)
 adminRouter.put('/updatecategory/:categoryId',updateCategory)

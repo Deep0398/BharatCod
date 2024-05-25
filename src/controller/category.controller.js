@@ -1,7 +1,7 @@
 import CategoryModel from "../models/category.model.js"
 import upload from "../middleware/multer.js";
 import urlJoin from "url-join";
-
+import mongoose from "mongoose";
 
 
 // Function to add a root category
@@ -36,32 +36,32 @@ export async function addCategory(req, res) {
 export async function addSubcategory(req, res) {
     try {
         const { name, parentId } = req.body;
-        const imageFiles = req.files;
-        if (!imageFiles || imageFiles.length === 0) {
-            return res.status(400).json({ message: 'Images are required' });
+        
+        console.log('Received parentId type:', typeof parentId);
+console.log('Received parentId:', parentId);
+       
+        if (!mongoose.Types.ObjectId.isValid(parentId)) {
+            return res.status(400).json({ message: "Invalid parent ID format" });
         }
+        const parentObjectId = new mongoose.Types.ObjectId(parentId);
 
-        const parentCategory = await CategoryModel.findById(parentId);
+        const parentCategory = await CategoryModel.findById(parentObjectId);
         if (!parentCategory) {
             return res.status(400).json({ message: "Parent category does not exist" });
         }
 
-        const existingSubcategory = await CategoryModel.findOne({ name, parent: parentId });
+        const existingSubcategory = await CategoryModel.findOne({ name, parent: parentObjectId });
         if (existingSubcategory) {
             return res.status(400).json({ message: "Subcategory already exists under this parent" });
         }
 
         // Get parent category name
         const parentCategoryName = parentCategory.name;
-
-        // Handle image uploading
-        const imagePaths = imageFiles.map(file => file.path.replace(/\\/g, '/'));
-
+ 
         const subcategory = new CategoryModel({ 
             name,
-            parent: parentId,
+            parent: parentObjectId,
             parentName: parentCategoryName, // Assign parent category name
-            image: imagePaths // Assign the image to the subcategory
         });
 
         const result = await subcategory.save();
