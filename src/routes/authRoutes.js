@@ -8,6 +8,7 @@ import {addShippingAdress,updateShippingAddress,deleteShippingAddress,} from "..
  import { addToRecentlyViewed } from "../middleware/recentView.js";
  import {placeOrder,trackOrder,cancelOrder} from "../controller/order.controller.js"
 import { addToWishlist,getWishlist,removeFromWishlist,shareWishlist } from "../controller/wishlist.controller.js";
+import { getCategories } from "../controller/category.controller.js";
  import upload from "../middleware/multer.js";
 
 const userRouter = express.Router();
@@ -77,6 +78,7 @@ userRouter.post('/shipping/add',addShippingAdress);
  userRouter.delete('/shipping/delete/:_id',deleteShippingAddress)
 
  userRouter.get('/promotionalOffers',getOffers)
+ userRouter.get('/getcategory',getCategories)
 
 
 
