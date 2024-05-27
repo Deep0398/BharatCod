@@ -238,9 +238,10 @@ export  async function searchProductByCategory(req,res){
             products = await Products.find({ category: query });
         } else {
          products = await Products.find({
-            category: {
-                $regex: new RegExp(query, 'i')
-            }
+            $or: [
+                { category: { $regex: new RegExp(query, 'i') } }, // Search by category
+                { "subcategories.name": { $regex: new RegExp(query, 'i') } } // Search by subcategory name
+            ]
         })
         }
         const productsWithImages = products.map(product => {

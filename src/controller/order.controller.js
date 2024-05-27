@@ -1,6 +1,7 @@
 import Order from "../models/order.model.js"
 import {Products} from "../models/product.model.js";
 import { userModel } from "../models/user.model.js";
+import { sendOrderStatusEmail } from "./emailController.js";
 import { Shipping } from "../models/shipping.model.js";
 import CategoryModel from "../models/category.model.js";
 
@@ -67,8 +68,8 @@ console.log(price)
             items: orderItems,
             totalPrice: totalPrice,
             status: "placed",
-            createdAt: new Date(),
-            updatedAt: new Date()
+            // createdAt: new Date(),
+            // updatedAt: new Date()
            
         });
 
@@ -82,6 +83,12 @@ console.log(price)
         console.log(user)
 
         await user.save();
+        const email = user.email;
+        const subject = 'Order Placed Successfully';
+        const text = `Your order with ID ${order._id} has been successfully placed. We will notify you once the order is shipped.`;
+
+        console.log(`Preparing to send email to: ${email}, Subject: ${subject}, Text: ${text}`);
+        await sendOrderStatusEmail(email, subject, text);
 
         return res.status(200).json(order);
     } catch (error) {
@@ -149,6 +156,15 @@ export async function updateOrderStatusController(req,res){
     if(!order){
         return res.status(404).json({message:"Order Not Found"})
     }
+    const user = await userModel.findById(order.userId);
+    if (user) {
+        const email = user.email;
+        const subject = `Order Status Updated to ${newStatus}`;
+        const text = `Your order with ID ${orderId} has been updated to ${newStatus}. If you have any questions, please contact our support team.`;
+
+        console.log(`Preparing to send email to: ${email}, Subject: ${subject}, Text: ${text}`);
+        await sendOrderStatusEmail(email, subject, text);
+    }
     return res.status(200).json(order)
     }catch(error){
         console.log(error)
@@ -172,6 +188,15 @@ export async function cancelOrder(req,res){
 
         for (const item of order.items){
             await Products.findByIdAndUpdate(item.productId,{$inc:{quantity:item.quantity}})
+    }
+    const user = await userModel.findById(order.userId);
+    if (user) {
+        const email = user.email;
+        const subject = 'Order Cancelled';
+        const text = `Your order with ID ${orderId} has been cancelled. If you have any questions, please contact our support team.`;
+
+        console.log(`Preparing to send email to: ${email}, Subject: ${subject}, Text: ${text}`);
+        await sendOrderStatusEmail(email, subject, text);
     }
     return res.status(200).json({message:"Order Cancelled"})
 }catch(error){
