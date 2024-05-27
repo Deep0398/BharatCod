@@ -90,7 +90,8 @@
             type: String
         },
         phoneNo: {
-            type: Number
+            type: Number,
+            required: true
         },
         role: {
             type: String,

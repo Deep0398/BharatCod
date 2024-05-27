@@ -13,7 +13,7 @@ dotenv.config()
 
 export async function signUpController(req,res){
   try {
-    const { name,email, password } = req.body;
+    const { name,email, password,phoneNo } = req.body;
     
     //  Check if the email is already registered
     const existingUser = await userModel.findOne({ email });
@@ -25,7 +25,7 @@ export async function signUpController(req,res){
     
     const hashedPassword = await bcrypt.hash(password, 10);  
     
-    const newUser = new userModel({ name,email, password: hashedPassword });
+    const newUser = new userModel({ name,email, password: hashedPassword,phoneNo });
     await newUser.save();
     
         return res.status(200).send('User registered successfully');
@@ -71,8 +71,17 @@ export async function searchUserController(req, res) {
 // Login 
  export async function loginController(req, res) {
   try {
-    const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
+    const { emailOrphoneNo, password } = req.body;
+    const isEmail = /\S+@\S+\.\S+/.test(emailOrphoneNo);
+    
+    let user;
+    if (isEmail) {
+      // If the input is an email, find the user by email
+      user = await userModel.findOne({ email: emailOrphoneNo });
+    } else {
+      // If the input is a phone number, find the user by phone number
+      user = await userModel.findOne({ phoneNo: emailOrphoneNo });
+    }
     if (!user) {
       return res.status(404).send('User not found');
     }
