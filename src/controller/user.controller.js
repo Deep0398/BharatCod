@@ -248,6 +248,42 @@ export async function addAddressContoller(req,res){
   }
 }
 
+export async function editAddressController(req, res) {
+  try {
+      const {userId, addressId } = req.params;
+      const { name, location, city, country, zip, state, phone, type } = req.body;
+
+      const existingUser = await userModel.findById(userId);
+      if (!existingUser) {
+          return res.status(404).send('User not found');
+      }
+
+      // Find the index of the address to be edited
+      const addressIndex = existingUser.addresses.findIndex(address => address._id.toString() === addressId);
+      if (addressIndex === -1) {
+          return res.status(404).send('Address not found');
+      }
+
+      existingUser.addresses[addressIndex] = {
+          _id: addressId,
+          name,
+          location,
+          city,
+          country,
+          zip,
+          state,
+          phone,
+          type
+      };
+
+      await existingUser.save();
+      return res.status(200).send('Address updated successfully');
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 //get user address
 
 export async function getUserAddressController(req, res) {

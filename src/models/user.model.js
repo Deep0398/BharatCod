@@ -25,7 +25,7 @@
         },
         phone: {
             type: String,
-            required: false
+            required: true
         },
         type:{
             type:String
@@ -91,7 +91,7 @@
         },
         phoneNo: {
             type: Number,
-            required: true
+         
         },
         role: {
             type: String,

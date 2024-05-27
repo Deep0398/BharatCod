@@ -2,7 +2,7 @@ import Order from "../models/order.model.js"
 import {Products} from "../models/product.model.js";
 import { userModel } from "../models/user.model.js";
 import { sendOrderStatusEmail } from "./emailController.js";
-import { sendSMS } from "../services/sendSms.js";
+// import { sendSMS } from "../services/sendSms.js";
 import { Shipping } from "../models/shipping.model.js";
 import CategoryModel from "../models/category.model.js";
 
@@ -91,6 +91,13 @@ console.log(price)
         console.log(`Preparing to send email to: ${email}, Subject: ${subject}, Text: ${text}`);
         await sendOrderStatusEmail(email, subject, text);
 
+        // const users = await userModel.findById(order.userId);
+        // if (users && users.addresses.length > 0) {
+        //     const mobileNumber = user.addresses[0].phone; // Assuming you want to use the first address's phone number
+        //     const message = `Your order with orderid ${order._id} status has been Placed` ;
+        //     await sendSMS(mobileNumber, message);
+        // }
+
         return res.status(200).json(order);
     } catch (error) {
         console.log(error);
@@ -166,6 +173,13 @@ export async function updateOrderStatusController(req,res){
         console.log(`Preparing to send email to: ${email}, Subject: ${subject}, Text: ${text}`);
         await sendOrderStatusEmail(email, subject, text);
     }
+    // const users = await userModel.findById(order.userId);
+    //     if (users && users.addresses.length > 0) {
+    //         const mobileNumber = user.addresses[0].phone; // Assuming you want to use the first address's phone number
+    //         const message = `Your order status has been updated to ${newStatus}.`;
+    //         await sendSMS(mobileNumber, message);
+    //     }
+
     return res.status(200).json(order)
     }catch(error){
         console.log(error)
