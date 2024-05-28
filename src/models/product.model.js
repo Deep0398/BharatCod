@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
     },
     category:{
         type: String,
-        required: true  
+          
     },
     subcategory:{
         type:String

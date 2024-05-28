@@ -77,50 +77,6 @@ console.log('Received parentId:', parentId);
     }
 }
 
-// Function to add a subcategory
- //export async function addSubcategory(req, res) {
-//     try {
-//         const { name, parentId } = req.body;
-//         const imageFiles = req.files;
-//         if (!imageFiles || imageFiles.length === 0) {
-//             return res.status(400).json({ message: 'Images are required' });
-//         }
-
-//         console.log(req.files);
-//         console.log(imageFiles);
-
-//         const imagePaths = imageFiles.map(file => file.path.replace(/\\/g, '/'));
-//         console.log(imagePaths);
-
-
-//         const parentCategory = await CategoryModel.findById(parentId);
-//         if (!parentCategory) {
-//             return res.status(400).json({ message: "Parent category does not exist" });
-//         }
-
-//         const existingSubcategory = await CategoryModel.findOne({ name, parent: parentId });
-//         if (existingSubcategory) {
-//             return res.status(400).json({ message: "Subcategory already exists under this parent" });
-//         }
-
-//         const subcategory = new CategoryModel({ 
-//             name,
-//             parent: parentId,
-//             image: imagePaths // Assign the image to the subcategory
-//         });
-
-//         const result = await subcategory.save();
-
-//         // Update parent category with new subcategory
-//         parentCategory.subcategories.push(result._id);
-//         await parentCategory.save();
-
-//         return res.status(200).json(result);
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(500).json({ message: "Internal server error" });
-//     }
-// }
 
 export async function getCategories(req, res) {
     try {
@@ -131,7 +87,6 @@ export async function getCategories(req, res) {
         return {
             _id : category._id,
             name : category.name,
-            subcategories: category.subcategories,
             image: image
         }
         

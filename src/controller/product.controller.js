@@ -31,17 +31,31 @@
         
             console.log(productimage1path,productimage2path,productimage3path);
 
-            const categories = await CategoryModel.findOne({name:category});
-            if (!categories) {
+            let categoryDoc = null;
+        let subcategoryDoc = null;
+
+        if (category) {
+            categoryDoc = await CategoryModel.findOne({ name: category });
+            if (!categoryDoc) {
                 return res.status(400).json({ message: "Invalid category" });
             }
-            let subcategories = null;
-            if (subcategories) {
-                subcategories = await CategoryModel.findOne({ name: subcategories, parent: categoryDoc._id });
-                if (!subcategories) {
+
+            if (subcategory) {
+                subcategoryDoc = categoryDoc.subcategories.find(subcat => subcat.name === subcategory);
+                if (!subcategoryDoc) {
                     return res.status(400).json({ message: "Invalid subcategory" });
                 }
             }
+        } else if (subcategory) {
+            // If subcategory is provided without a category
+            categoryDoc = await CategoryModel.findOne({ 'subcategories.name': subcategory });
+            if (categoryDoc) {
+                subcategoryDoc = categoryDoc.subcategories.find(subcat => subcat.name === subcategory);
+            }
+            if (!subcategoryDoc) {
+                return res.status(400).json({ message: "Invalid subcategory" });
+            }
+        }
             let discount = 0;
             if (salePrice < regularPrice) {
                 discount = ((regularPrice - salePrice) / regularPrice) * 100;
@@ -55,8 +69,8 @@
                 price: salePrice,
                 discount,
                 specification,
-                category: category,
-                subcategory: subcategory,
+                category: categoryDoc ? categoryDoc.name : null,
+            subcategory: subcategoryDoc ? subcategoryDoc.name : null,
                 color,
                 size,
                 reviews,
@@ -72,10 +86,40 @@
     console.log(product)
             const result = await product.save();
             console.log("Product saved");
+
+            if (subcategoryDoc) {
+                await addProductToSubcategory(categoryDoc._id, subcategoryDoc.id, product);
+            }
+    
             return res.status(200).json(result);
         } catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    async function addProductToSubcategory(categoryId, subcategoryId, product   ) {
+        try {
+            const category = await CategoryModel.findById(categoryId);
+            if (!category) {
+                throw new Error("Category not found");
+            }
+    
+            const subcategory = category.subcategories.find(subcat => subcat.id.toString() === subcategoryId.toString());
+            if (!subcategory) {
+                throw new Error("Subcategory not found");
+            }
+    
+            if (!subcategory.products) {
+                subcategory.products = [];
+            }
+    
+            subcategory.products.push(product);
+    
+            await category.save();
+            console.log("Subcategory updated with new product");
+        } catch (err) {
+            console.error("Error updating subcategory:", err);
         }
     }
 
@@ -240,7 +284,7 @@ export  async function searchProductByCategory(req,res){
          products = await Products.find({
             $or: [
                 { category: { $regex: new RegExp(query, 'i') } }, // Search by category
-                { "subcategories.name": { $regex: new RegExp(query, 'i') } } // Search by subcategory name
+                { "subcategory.name": { $regex: new RegExp(query, 'i') } } // Search by subcategory name
             ]
         })
         }
